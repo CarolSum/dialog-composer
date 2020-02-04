@@ -36,3 +36,37 @@
     transform: rotate(360deg);
   }
 }
+
+
+.section {
+  height: 100vh;
+}
+
+.scene1 {
+  background-color: black;
+}
+
+.scene2 {
+  background-color: blueviolet;
+}
+.scene3 {
+  background-color: blue;
+}
+.scene4 {
+  background-color: red;
+}
+.scene5 {
+  background-color: yellow;
+}
+.scene6 {
+  background-color: darkcyan;
+}
+.scene7 {
+  background-color: aqua;
+}
+.scene8 {
+  background-color: wheat;
+}
+.scene0 {
+  background-color: sandybrown;
+}
