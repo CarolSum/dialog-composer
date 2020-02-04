@@ -1,6 +1,25 @@
 import React from 'react';
 // import logo from './logo.svg';
 import './App.css';
+import CoffeeText from './assets/coffee.png';
+import ScanQRcode from './assets/scan.png';
+import Subway from './assets/subway.png';
+// import BgMobile from './assets/bg-mobile.png';
+import Scene2Subway from './assets/subway-scene2.png';
+import Scene2Bus from './assets/bus-scene2.png';
+import Scene2Bike from './assets/bike-scene2.png';
+// scene3
+import Scene3Takeaway from './assets/takeaway-scene3.png';
+import Scene3Text from './assets/text-scene3.png';
+//scene 4
+import Scene4Subway from './assets/subway-scene4.png';
+// scene 5
+import Scene5Hand from './assets/hand-scene5.png';
+// scene 6
+import Scene6Hand from './assets/hand-scene6.png';
+// scene 7
+import Letter from './assets/letter.png';
+import ConfrimBtn from './assets/confirm-btn.png';
 
 const delta = 100;
 let H: number = 0;
@@ -37,7 +56,225 @@ function cubicBezier(p1: [any, any], cp1: [any, any], cp2: [any, any], p2: [any,
   };
 }
 
+function animateCSS(element: string, animationName: string[], callback?: any) {
+  const node = document.querySelector(element);
+  if (!node) return;
+  node.classList.add('animated', ...animationName);
+
+  function handleAnimationEnd() {
+    if (!node) return;
+    node.classList.remove('animated', ...animationName);
+    node.removeEventListener('animationend', handleAnimationEnd);
+    if (typeof callback === 'function') callback();
+  }
+
+  node.addEventListener('animationend', handleAnimationEnd);
+}
+
 const getCurrentBezierPoint = cubicBezier([0, 0], [0.0, 0], [0.0, 1], [1, 1]);
+
+// 动画帧 interface
+interface IAniFrame {
+  selector: string;
+  aniCls: string[];
+  addAfterAnimation: string[];
+  removeBeforeAnimation: string[];
+  children?: IAniFrame[];
+}
+
+// 定义每个场景中的动画组
+const animationGroup: IAniFrame[][] = [
+  // scene 0
+  [
+    {
+      selector: '.el-subway',
+      aniCls: ['lr-circle', 'infinite'],
+      addAfterAnimation: [],
+      removeBeforeAnimation: [],
+    }
+  ],
+  // scene 1
+  [
+    {
+      selector: '.el-coffee',
+      aniCls: ['fadeIn'],
+      addAfterAnimation: ['opacity1'],  // 动画结束后添加的样式类，用于覆盖原来的样式
+      removeBeforeAnimation: [],  // 动画开始前添加的样式类
+      // 子动画组
+      children: [
+        {
+          selector: '.el-scan',
+          removeBeforeAnimation: ['opacity0'],
+          aniCls: ['slideInUp'],
+          addAfterAnimation: ['opacity1'],  // 动画结束后添加的样式类，用于覆盖原来的样式
+        }
+      ],
+    }
+  ],
+  // scene 2
+  [
+    {
+      selector: '.el-subway2',
+      aniCls: ['slideInLeft'],
+      addAfterAnimation: ['opacity1'],
+      removeBeforeAnimation: ['opacity0']
+    },
+    {
+      selector: '.el-bus',
+      aniCls: ['slideInRight'],
+      addAfterAnimation: ['opacity1'],
+      removeBeforeAnimation: ['opacity0'],
+      children: [
+        {
+          selector: '.el-bike',
+          removeBeforeAnimation: ['opacity0'],
+          aniCls: ['slideInUp'],
+          addAfterAnimation: ['opacity1'],
+        }
+      ]
+    }
+  ],
+  // scene3
+  [
+    {
+      selector: '.el-takeaway',
+      aniCls: ['takeaway-arrive'],
+      addAfterAnimation: ['opacity1'],
+      removeBeforeAnimation: ['opacity0'],
+      children: [
+        {
+          selector: '.el-takeaway-text',
+          aniCls: ['fadeIn'],
+          addAfterAnimation: ['opacity1'],
+          removeBeforeAnimation: ['opacity0'],
+        },
+      ]
+    },
+  ],
+  // scene 4
+  [
+    {
+      selector: '.el-subway3',
+      aniCls: ['rl-circle', 'infinite'],
+      addAfterAnimation: [],
+      removeBeforeAnimation: [],
+    }
+  ],
+  // scene 5
+  [
+    {
+      selector: '.el-hand',
+      aniCls: ['slideInUp'],
+      removeBeforeAnimation: ['opacity0'],
+      addAfterAnimation: ['opacity1'],
+    }
+  ],
+  // scene 6
+  [
+    {
+      selector: '.el-hand2',
+      aniCls: ['slideInCenterUp'],
+      removeBeforeAnimation: ['opacity0'],
+      addAfterAnimation: ['opacity1'],
+    }
+  ],
+  // scene 7
+  [
+    {
+      selector: '.el-letter',
+      aniCls: ['rotateUp'],
+      removeBeforeAnimation: ['opacity0'],
+      addAfterAnimation: ['opacity1'],
+      children: [
+        {
+          selector: '.el-confirm',
+          aniCls: ['fadeIn'],
+          removeBeforeAnimation: ['opacity0'],
+          addAfterAnimation: ['opacity1'],
+        }
+      ]
+    },
+  ]
+]
+
+interface ITempCls {
+  added: string[];
+  removed: string[];
+}
+
+let tempClsMap: { [key: string] : ITempCls } = {};
+
+function animate(config: IAniFrame) {
+  const target = document.querySelector(config.selector);
+  if (!target) return;
+  // 动画前预处理
+  if (config.removeBeforeAnimation) {
+    target.classList.remove(...config.removeBeforeAnimation);
+
+    // 记录暂时移除的类
+    if (!tempClsMap[config.selector]) {
+      tempClsMap[config.selector] = {
+        added: [],
+        removed: [...config.removeBeforeAnimation],
+      }
+    } else {
+      tempClsMap[config.selector].removed = tempClsMap[config.selector].removed.concat(config.removeBeforeAnimation);
+    }
+  }
+
+  // 如果动画包含无限循环，则转场的时候也需要清除
+  if (config.aniCls.includes('infinite')) {
+    const cls = [...config.aniCls];
+    cls.splice(cls.indexOf('infinite'), 1);
+
+    // 记录暂时添加的类
+    if (!tempClsMap[config.selector]) {
+      tempClsMap[config.selector] = {
+        added: [...cls],
+        removed: [],
+      }
+    } else {
+      tempClsMap[config.selector].added = tempClsMap[config.selector].added.concat(cls);
+    }
+  }
+
+  // 执行指定动画
+  animateCSS(config.selector, config.aniCls, function() {
+    // 动画后处理
+    if (config.addAfterAnimation) {
+      // 添加一些样式以覆盖初始值
+      target.classList.add(...config.addAfterAnimation);
+
+      // 记录暂时添加的类
+      if (!tempClsMap[config.selector]) {
+        tempClsMap[config.selector] = {
+          added: [...config.addAfterAnimation],
+          removed: [],
+        }
+      } else {
+        tempClsMap[config.selector].added = tempClsMap[config.selector].added.concat(config.addAfterAnimation);
+      }
+    }
+
+    // 如果存在子动画
+    if (config.children) {
+      config.children.forEach((subCfg) => {
+        animate(subCfg);
+      });
+    }
+  })
+}
+
+// 清理上次转场时添加/删除的临时样式
+function cleanUpScene() {
+  for (let selector in tempClsMap) {
+    const node = document.querySelector(selector);
+    if (!node) continue;
+    node.classList.remove(...tempClsMap[selector].added);
+    node.classList.add(...tempClsMap[selector].removed);
+  }
+  tempClsMap = {};
+}
 
 class App extends React.Component {
 
@@ -149,6 +386,10 @@ class App extends React.Component {
         console.log('scrollTop: ', document.scrollingElement!.scrollTop);
         tid && clearInterval(tid);
         tid = undefined;
+
+       // 清理工作
+       cleanUpScene();
+       this.transition();
       } else {
         const [x, y] = getCurrentBezierPoint(percent);
         document.scrollingElement!.scrollTop = sTop + y * H * abs;
@@ -158,19 +399,55 @@ class App extends React.Component {
       }
     }, 0);
   }
+
+  transition() {
+    if (this.sectionId < 0 || this.sectionId > 8) return;
+    const frames = animationGroup[this.sectionId];
+    if (!frames) return;
+    frames.forEach((frame) => {
+      animate(frame);
+    });
+  }
   
   render() {
     return (
       <div className="App">
-        <div className="section scene0"></div>
-        <div className="section scene1"></div>
-        <div className="section scene2"></div>
-        <div className="section scene3"></div>
-        <div className="section scene4"></div>
-        <div className="section scene5"></div>
-        <div className="section scene6"></div>
-        <div className="section scene7"></div>
-        <div className="section scene8"></div>
+        <div className="section scene0">
+          <div className="subway-container">
+            <img src={Subway} alt="subway" className="el-subway"/>
+          </div>
+        </div>
+        <div className="section scene1">
+          <img src={CoffeeText} alt="coffee" className="el-coffee opacity0"/>
+          <img src={ScanQRcode} alt="scan" className="el-scan opacity0"/>
+        </div>
+        <div className="section scene2">
+          <img src={Scene2Subway} alt="scene-2-subway" className="el-subway2 opacity0"/>
+          <img src={Scene2Bus} alt="scene-2-bus" className="el-bus opacity0"/>
+          <img src={Scene2Bike} alt="scene-2-bike" className="el-bike opacity0"/>
+        </div>
+        <div className="section scene3">
+          <img src={Scene3Takeaway} alt="scene-3-takeaway" className="el-takeaway opacity0"/>
+          <img src={Scene3Text} alt="scene-3-text" className="el-takeaway-text opacity0"/>
+        </div>
+        <div className="section scene4">
+          <div className="subway-container">
+            <img src={Scene4Subway} alt="scene-4-subway" className="el-subway3"/>
+          </div>
+        </div>
+        <div className="section scene5">
+          <img src={Scene5Hand} alt="scene-5-hand" className="el-hand opacity0"/>
+        </div>
+        <div className="section scene6">
+          <img src={Scene6Hand} alt="scene-6-hand" className="el-hand2 opacity0"/>
+        </div>
+        <div className="section scene7">
+          <img src={Letter} alt="scene-7-letter" className="el-letter opacity0"/>
+          <img src={ConfrimBtn} alt="scene-7-btn" className="el-confirm opacity0"/>
+        </div>
+        <div className="section scene8">
+          <div className="iyrics-container"></div>
+        </div>
       </div>
     );
   }
