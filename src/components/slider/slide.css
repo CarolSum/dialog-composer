@@ -1,0 +1,12 @@
+.slider-wrapper, .slider-content {
+  overflow: hidden;
+}
+
+.slider-wrapper {
+  white-space: nowrap;
+}
+
+.slider-content {
+  display: inline-block;
+  width: 100%;
+}

@@ -4,6 +4,14 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import VConsole from 'vconsole';
+import { setDocHeight } from './utils';
+
+window.addEventListener('resize', function () {
+  setDocHeight();
+});
+window.addEventListener('orientationchange', function () {
+  setDocHeight();
+});
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const vConsole = new VConsole();

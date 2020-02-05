@@ -20,6 +20,11 @@ import Scene6Hand from './assets/hand-scene6.png';
 // scene 7
 import Letter from './assets/letter.png';
 import ConfrimBtn from './assets/confirm-btn.png';
+import Tag from './assets/tag.png';
+
+import { setDocHeight } from './utils';
+// import Limarquee from 'limarquee';
+import { Slider } from './components/slider/slide';
 
 const delta = 100;
 let H: number = 0;
@@ -300,8 +305,14 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    setDocHeight();
     console.log(window.innerHeight);
     console.log(window.screen.height);
+    console.log(window.screenY);
+
+    console.log(window.screen.availHeight);
+ 
+    console.log(document.documentElement.getBoundingClientRect().height);
     // H = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
     // H = window.screen.height;
 
@@ -309,7 +320,7 @@ class App extends React.Component {
     for (let i = 0; i < list.length; i++) {
       console.log(list[i].getBoundingClientRect().height);
     }
-    H = list[0].getBoundingClientRect().height;
+    // H = list[0].getBoundingClientRect().height;
     
     console.log(this);
     // 禁用浏览器滚动事件
@@ -323,6 +334,20 @@ class App extends React.Component {
     window.addEventListener('touchmove', this.handleMouseMove,  { passive: false });
 
     window.addEventListener('touchend', this.clearPoint, false);
+
+    // const limarquee = new Limarquee('.tag-container');
+    // limarquee.render({
+    //   direction: 'left',	// 滚动方向，可选 left / right / up / down
+    //   loop:	-1,	      // 循环次数，-1 为无限循环
+    //   hoverstop: true,	// 鼠标悬停暂停
+    // });
+
+    // setTimeout(() => {
+    //   const node = document.querySelector('.test');
+    //   console.log(node);
+    //   if (!node) return;
+    //   node.classList.add('tag-large');
+    // }, 10000);
   }
 
   handleMouseMove = (e: TouchEvent) => {
@@ -408,6 +433,10 @@ class App extends React.Component {
       animate(frame);
     });
   }
+
+  handleClickTag(e: any) {
+    console.log('click tag!!!');
+  }
   
   render() {
     return (
@@ -444,6 +473,26 @@ class App extends React.Component {
         <div className="section scene7">
           <img src={Letter} alt="scene-7-letter" className="el-letter opacity0"/>
           <img src={ConfrimBtn} alt="scene-7-btn" className="el-confirm opacity0"/>
+          <div className="tag-container">
+            <Slider speed={20}>
+              <div className="tag-row margin-row">
+                <img src={Tag} alt="tag" className="tag-item" onClick={this.handleClickTag}/>
+                <img src={Tag} alt="tag" className="tag-item"/>
+                <img src={Tag} alt="tag" className="tag-item"/>
+              </div>
+              <div className="tag-row">
+                <img src={Tag} alt="tag" className="tag-item"/>
+                <img src={Tag} alt="tag" className="tag-item"/>
+                <img src={Tag} alt="tag" className="tag-item"/>
+                <img src={Tag} alt="tag" className="tag-item"/>
+              </div>
+              <div className="tag-row margin-row">
+                <img src={Tag} alt="tag" className="tag-item"/>
+                <img src={Tag} alt="tag" className="tag-item"/>
+                <img src={Tag} alt="tag" className="tag-item"/>
+              </div>
+            </Slider>
+          </div>
         </div>
         <div className="section scene8">
           <div className="iyrics-container"></div>

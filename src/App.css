@@ -38,8 +38,13 @@
 }
 
 .section {
-  height: 100vh;
+  /* --safe-area-inset-bottom: env(safe-area-inset-bottom); */
+  /* --safe-area-inset-top: env(safe-area-inset-top); */
+  /* height: calc(100vh - var(--safe-area-inset-bottom) - var(--safe-area-inset-top)); */
+  height: calc(var(--vh, 1vh) * 100);
   position: relative;
+  /* box-sizing: border-box; */
+  /* margin-bottom: var(--safe-area-inset-bottom); */
 }
 
 .opacity0 {
@@ -302,4 +307,35 @@
   width: 95%;
   height: 90%;
   background: center / contain no-repeat url('./assets/bg-lyrics.png');
+}
+
+.tag-container {
+  position: relative;
+  width: 90%;
+  margin: 0 auto;
+  top: 53%;
+}
+
+.str_move {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  cursor: move;
+}
+
+.tag-row {
+  position: relative;
+}
+
+.tag-container .tag-item {
+  width: 6rem;
+}
+
+.tag-click {
+  background-color: red;
+}
+
+.margin-row {
+  margin-left: 50px;
 }
