@@ -269,6 +269,17 @@
   bottom: 0%;
 }
 
+.letter-wrapper {
+  position: absolute;
+  /* width: 100%; */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: url('./assets/letter.png') no-repeat;
+  background-size: contain;
+  background-position: 10px center;
+}
+
 .el-confirm {
   position: absolute;
   width: 40%;
@@ -326,9 +337,9 @@
 
 .tag-container {
   position: relative;
-  width: 88%;
+  width: 86%;
   margin: 0 auto;
-  top: 52%;
+  top: 49%;
 }
 
 .str_move {

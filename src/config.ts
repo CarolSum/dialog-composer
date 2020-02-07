@@ -106,7 +106,7 @@ export const animationGroup: IAniFrame[][] = [
   // scene 7
   [
     {
-      selector: '.el-letter',
+      selector: '.letter-wrapper',
       aniCls: ['rotateUp'],
       removeBeforeAnimation: ['opacity0'],
       addAfterAnimation: ['opacity1'],

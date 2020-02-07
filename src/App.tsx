@@ -172,6 +172,14 @@ class App extends React.Component {
     window.addEventListener('scroll', this.handleWindowScroll);
 
     document.body.addEventListener('blur', this.handleInputBlur, true);
+
+    // 动态设置 scene7 信纸容器的高度
+    setTimeout(() => {
+      const nodes = document.getElementsByClassName('letter-wrapper');
+      if (nodes && nodes.length > 0) {
+        (nodes[0] as HTMLElement).style.height = `${window.innerWidth * 1.666}px`;
+      }
+    }, 100);
   }
 
   componentWillUnmount() {
@@ -380,40 +388,42 @@ class App extends React.Component {
           <img src={Scene6Hand} alt="scene-6-hand" className="el-hand2 opacity0"/>
         </div>
         <div className="section scene7">
-          <img src={Letter} alt="scene-7-letter" className="el-letter opacity0"/>
+          <div className="letter-wrapper opacity0">
+            <div className="tag-container">
+              <div className="input-container">
+                <input type="text" className="song-input" placeholder="自定义歌曲名"
+                  onCompositionEnd={this.compositeEnd}
+                  onCompositionStart={this.compositeStart}
+                  onInput={this.checkInputValid}
+                  // onFocus={}
+                />
+              </div>
+              <Slider speed={20}>
+                <div className="tag-row">
+                  <div className="tag-item item-a" onClick={this.handleClickTag} data-type="a" >爱拼才会赢</div>
+                  <div className="tag-item item-b" onClick={this.handleClickTag} data-type="b">未来不是梦</div>
+                  <div className="tag-item item-c" onClick={this.handleClickTag} data-type="c">我真的很不错</div>
+                  <div className="tag-item item-d" onClick={this.handleClickTag} data-type="d">壮志在我胸</div>
+                </div>
+                <div className="tag-row margin-row">
+                  <div className="tag-item item-e" onClick={this.handleClickTag} data-type="e">哈哈哈哈</div>
+                  <div className="tag-item item-f" onClick={this.handleClickTag} data-type="f">好嗨哟</div>
+                  <div className="tag-item item-g" onClick={this.handleClickTag} data-type="g">好嗨哟</div>
+                  <div className="tag-item item-h" onClick={this.handleClickTag} data-type="h">C位出道</div>
+                </div>
+                <div className="tag-row">
+                  <div className="tag-item item-i" onClick={this.handleClickTag} data-type="i">佛系少年</div>
+                  <div className="tag-item item-j" onClick={this.handleClickTag} data-type="j">葛优瘫</div>
+                  <div className="tag-item item-k" onClick={this.handleClickTag} data-type="k">断舍离</div>
+                  <div className="tag-item item-l" onClick={this.handleClickTag} data-type="l">神马都是浮云</div>
+                </div>
+              </Slider>
+            </div>
+          </div>
+          {/* <img src={Letter} alt="scene-7-letter" className="el-letter opacity0"/> */}
           <div className="el-confirm opacity0"
             onTouchStart={() => { this.touchConfirm(true); }}
             onTouchEnd={() => { this.touchConfirm(false); }}>
-          </div>
-          <div className="tag-container">
-            <div className="input-container">
-              <input type="text" className="song-input" placeholder="自定义歌曲名"
-                onCompositionEnd={this.compositeEnd}
-                onCompositionStart={this.compositeStart}
-                onInput={this.checkInputValid}
-                // onFocus={}
-              />
-            </div>
-            <Slider speed={20}>
-              <div className="tag-row">
-                <div className="tag-item item-a" onClick={this.handleClickTag} data-type="a" >爱拼才会赢</div>
-                <div className="tag-item item-b" onClick={this.handleClickTag} data-type="b">未来不是梦</div>
-                <div className="tag-item item-c" onClick={this.handleClickTag} data-type="c">我真的很不错</div>
-                <div className="tag-item item-d" onClick={this.handleClickTag} data-type="d">壮志在我胸</div>
-              </div>
-              <div className="tag-row margin-row">
-                <div className="tag-item item-e" onClick={this.handleClickTag} data-type="e">哈哈哈哈</div>
-                <div className="tag-item item-f" onClick={this.handleClickTag} data-type="f">好嗨哟</div>
-                <div className="tag-item item-g" onClick={this.handleClickTag} data-type="g">好嗨哟</div>
-                <div className="tag-item item-h" onClick={this.handleClickTag} data-type="h">C位出道</div>
-              </div>
-              <div className="tag-row">
-                <div className="tag-item item-i" onClick={this.handleClickTag} data-type="i">佛系少年</div>
-                <div className="tag-item item-j" onClick={this.handleClickTag} data-type="j">葛优瘫</div>
-                <div className="tag-item item-k" onClick={this.handleClickTag} data-type="k">断舍离</div>
-                <div className="tag-item item-l" onClick={this.handleClickTag} data-type="l">神马都是浮云</div>
-              </div>
-            </Slider>
           </div>
         </div>
         <div className="section scene8">
