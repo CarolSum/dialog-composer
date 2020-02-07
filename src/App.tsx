@@ -1,9 +1,11 @@
 import React from 'react';
 // import logo from './logo.svg';
 import './App.css';
+import { IAniFrame, animationGroup } from './config';
 import CoffeeText from './assets/coffee.png';
 import ScanQRcode from './assets/scan.png';
 import Subway from './assets/subway.png';
+
 // import BgMobile from './assets/bg-mobile.png';
 import Scene2Subway from './assets/subway-scene2.png';
 import Scene2Bus from './assets/bus-scene2.png';
@@ -19,12 +21,14 @@ import Scene5Hand from './assets/hand-scene5.png';
 import Scene6Hand from './assets/hand-scene6.png';
 // scene 7
 import Letter from './assets/letter.png';
-import ConfrimBtn from './assets/confirm-btn.png';
-import Tag from './assets/tag.png';
 
-import { setDocHeight } from './utils';
-// import Limarquee from 'limarquee';
+import { cubicBezier, stopWheel, animateCSS } from './utils';
 import { Slider } from './components/slider/slide';
+
+interface ITempCls {
+  added: string[];
+  removed: string[];
+}
 
 const delta = 100;
 let H: number = 0;
@@ -32,181 +36,7 @@ const totalTime = 800;
 
 let tid: NodeJS.Timeout | undefined;
 
-function stopWheel(e: any) {
-  if(!e){ e = window.event; } /* IE7, IE8, Chrome, Safari */
-  if(e.preventDefault) { e.preventDefault(); } /* Chrome, Safari, Firefox */
-  e.returnValue = false; /* IE7, IE8 */
-}
-
-function cubicBezier(p1: [any, any], cp1: [any, any], cp2: [any, any], p2: [any, any]) {
-  // 起始点
-  const [x1, y1] = p1;
-  const [x2, y2] = p2;
-  // 控制点
-  const [cx1, cy1] = cp1;
-  const [cx2, cy2] = cp2;
-   
-  return (t: any) => {
-    let x =
-      x1 * (1 - t) * (1 - t) * (1 - t) +
-      3 * cx1 * t * (1 - t) * (1 - t) +
-      3 * cx2 * t * t * (1 - t) +
-      x2 * t * t * t;
-    let y =
-      y1 * (1 - t) * (1 - t) * (1 - t) +
-      3 * cy1 * t * (1 - t) * (1 - t) +
-      3 * cy2 * t * t * (1 - t) +
-      y2 * t * t * t;
-    return [x, y];
-  };
-}
-
-function animateCSS(element: string, animationName: string[], callback?: any) {
-  const node = document.querySelector(element);
-  if (!node) return;
-  node.classList.add('animated', ...animationName);
-
-  function handleAnimationEnd() {
-    if (!node) return;
-    node.classList.remove('animated', ...animationName);
-    node.removeEventListener('animationend', handleAnimationEnd);
-    if (typeof callback === 'function') callback();
-  }
-
-  node.addEventListener('animationend', handleAnimationEnd);
-}
-
 const getCurrentBezierPoint = cubicBezier([0, 0], [0.0, 0], [0.0, 1], [1, 1]);
-
-// 动画帧 interface
-interface IAniFrame {
-  selector: string;
-  aniCls: string[];
-  addAfterAnimation: string[];
-  removeBeforeAnimation: string[];
-  children?: IAniFrame[];
-}
-
-// 定义每个场景中的动画组
-const animationGroup: IAniFrame[][] = [
-  // scene 0
-  [
-    {
-      selector: '.el-subway',
-      aniCls: ['lr-circle', 'infinite'],
-      addAfterAnimation: [],
-      removeBeforeAnimation: [],
-    }
-  ],
-  // scene 1
-  [
-    {
-      selector: '.el-coffee',
-      aniCls: ['fadeIn'],
-      addAfterAnimation: ['opacity1'],  // 动画结束后添加的样式类，用于覆盖原来的样式
-      removeBeforeAnimation: [],  // 动画开始前添加的样式类
-      // 子动画组
-      children: [
-        {
-          selector: '.el-scan',
-          removeBeforeAnimation: ['opacity0'],
-          aniCls: ['slideInUp'],
-          addAfterAnimation: ['opacity1'],  // 动画结束后添加的样式类，用于覆盖原来的样式
-        }
-      ],
-    }
-  ],
-  // scene 2
-  [
-    {
-      selector: '.el-subway2',
-      aniCls: ['slideInLeft'],
-      addAfterAnimation: ['opacity1'],
-      removeBeforeAnimation: ['opacity0']
-    },
-    {
-      selector: '.el-bus',
-      aniCls: ['slideInRight'],
-      addAfterAnimation: ['opacity1'],
-      removeBeforeAnimation: ['opacity0'],
-      children: [
-        {
-          selector: '.el-bike',
-          removeBeforeAnimation: ['opacity0'],
-          aniCls: ['slideInUp'],
-          addAfterAnimation: ['opacity1'],
-        }
-      ]
-    }
-  ],
-  // scene3
-  [
-    {
-      selector: '.el-takeaway',
-      aniCls: ['takeaway-arrive'],
-      addAfterAnimation: ['opacity1'],
-      removeBeforeAnimation: ['opacity0'],
-      children: [
-        {
-          selector: '.el-takeaway-text',
-          aniCls: ['fadeIn'],
-          addAfterAnimation: ['opacity1'],
-          removeBeforeAnimation: ['opacity0'],
-        },
-      ]
-    },
-  ],
-  // scene 4
-  [
-    {
-      selector: '.el-subway3',
-      aniCls: ['rl-circle', 'infinite'],
-      addAfterAnimation: [],
-      removeBeforeAnimation: [],
-    }
-  ],
-  // scene 5
-  [
-    {
-      selector: '.el-hand',
-      aniCls: ['slideInUp'],
-      removeBeforeAnimation: ['opacity0'],
-      addAfterAnimation: ['opacity1'],
-    }
-  ],
-  // scene 6
-  [
-    {
-      selector: '.el-hand2',
-      aniCls: ['slideInCenterUp'],
-      removeBeforeAnimation: ['opacity0'],
-      addAfterAnimation: ['opacity1'],
-    }
-  ],
-  // scene 7
-  [
-    {
-      selector: '.el-letter',
-      aniCls: ['rotateUp'],
-      removeBeforeAnimation: ['opacity0'],
-      addAfterAnimation: ['opacity1'],
-      children: [
-        {
-          selector: '.el-confirm',
-          aniCls: ['fadeIn'],
-          removeBeforeAnimation: ['opacity0'],
-          addAfterAnimation: ['opacity1'],
-        }
-      ]
-    },
-  ]
-]
-
-interface ITempCls {
-  added: string[];
-  removed: string[];
-}
-
 let tempClsMap: { [key: string] : ITempCls } = {};
 
 function animate(config: IAniFrame) {
@@ -287,6 +117,11 @@ class App extends React.Component {
   private originX: number | null = 0;
   private originY: number | null = 0;
 
+  // 歌曲名输入框的标志位, 用于处理中文输入法在部分设备的拼音字符问题
+  private inputLock: boolean = false;
+  // 保存用户选择的标签
+  private selectTags: { [key: string]: boolean } = {};
+
   setOriginPoint = (e: TouchEvent) => {
     if (e.touches.length) {
       const touchPoint = e.touches[0];
@@ -305,24 +140,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    setDocHeight();
-    console.log(window.innerHeight);
-    console.log(window.screen.height);
-    console.log(window.screenY);
-
-    console.log(window.screen.availHeight);
- 
-    console.log(document.documentElement.getBoundingClientRect().height);
-    // H = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    // H = window.screen.height;
-
-    const list = document.getElementsByClassName('section');
-    for (let i = 0; i < list.length; i++) {
-      console.log(list[i].getBoundingClientRect().height);
-    }
-    // H = list[0].getBoundingClientRect().height;
-    
-    console.log(this);
     // 禁用浏览器滚动事件
     window.addEventListener('DOMMouseScroll', stopWheel, { passive: false });
     window.addEventListener('mousewheel', stopWheel, { passive: false });
@@ -335,26 +152,22 @@ class App extends React.Component {
 
     window.addEventListener('touchend', this.clearPoint, false);
 
-    // const limarquee = new Limarquee('.tag-container');
-    // limarquee.render({
-    //   direction: 'left',	// 滚动方向，可选 left / right / up / down
-    //   loop:	-1,	      // 循环次数，-1 为无限循环
-    //   hoverstop: true,	// 鼠标悬停暂停
-    // });
+    document.body.style.overflow = 'hidden';
+  }
 
-    // setTimeout(() => {
-    //   const node = document.querySelector('.test');
-    //   console.log(node);
-    //   if (!node) return;
-    //   node.classList.add('tag-large');
-    // }, 10000);
+  componentWillUnmount() {
+    window.removeEventListener('DOMMouseScroll', stopWheel);
+    window.removeEventListener('mousewheel', stopWheel);
+
+    window.removeEventListener('touchstart', this.setOriginPoint, false);
+    window.removeEventListener('touchmove', this.handleMouseMove, false);
+    window.removeEventListener('touchend', this.clearPoint, false);
   }
 
   handleMouseMove = (e: TouchEvent) => {
-    console.log(e);
     if (!e.touches.length) return;
     const point = e.touches[0];
-    if (!point.screenX || !point.screenY) return;
+    if (!point.screenX || !point.screenY || tid) return;
 
     if (this.originX && this.originY) {
       const deltaY = Math.abs(point.screenY - this.originY);
@@ -366,15 +179,6 @@ class App extends React.Component {
       }
     }
     e.preventDefault();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('DOMMouseScroll', stopWheel);
-    window.removeEventListener('mousewheel', stopWheel);
-
-    window.removeEventListener('touchstart', this.setOriginPoint, false);
-    window.removeEventListener('touchmove', this.handleMouseMove, false);
-    window.removeEventListener('touchend', this.clearPoint, false);
   }
 
   switchScene(dir: boolean) {
@@ -395,9 +199,21 @@ class App extends React.Component {
     }
   }
 
+  checkInputValid = (e: any) => {
+    if (!this.inputLock) {
+      if (e.target.value && e.target.value.length > 10) {
+        alert('请勿超过十个字');
+        e.target.value = e.target.value.slice(0,10);
+        return false;
+      }
+    }
+    return true;
+  }
+
   interpolate(abs: number) {
-    if (tid || !H) return;
-    const sTop = document.scrollingElement!.scrollTop;
+    const scrollingElement = document.scrollingElement;
+    if (tid || !H || !scrollingElement) return;
+    const sTop = scrollingElement.scrollTop;
     const curTime = Date.now();
 
     tid = setInterval(() => {
@@ -406,9 +222,8 @@ class App extends React.Component {
       const percent = diff / totalTime;
 
       if (diff >= totalTime) {
-        document.scrollingElement!.scrollTop = sTop + H * abs;
+        scrollingElement.scrollTop = sTop + H * abs;
 
-        console.log('scrollTop: ', document.scrollingElement!.scrollTop);
         tid && clearInterval(tid);
         tid = undefined;
 
@@ -417,10 +232,7 @@ class App extends React.Component {
        this.transition();
       } else {
         const [x, y] = getCurrentBezierPoint(percent);
-        document.scrollingElement!.scrollTop = sTop + y * H * abs;
-
-        console.log('scrollTop: ', document.scrollingElement!.scrollTop);
-        console.log('cur: ', x, y);
+        scrollingElement.scrollTop = sTop + y * H * abs;
       }
     }, 0);
   }
@@ -434,8 +246,52 @@ class App extends React.Component {
     });
   }
 
-  handleClickTag(e: any) {
-    console.log('click tag!!!');
+  touchConfirm = (flag: boolean) => {
+    const node = document.querySelector('.el-confirm');
+    if (flag) {
+      node?.classList.add('touch');
+    } else {
+      node?.classList.remove('touch');
+    }
+  }
+
+  handleClickTag = (e: any) => {
+    const type = e.target.getAttribute('data-type');
+    if (!type) return;
+    const nodes = document.getElementsByClassName(`item-${type}`);
+    for(let i = 0; i < nodes.length; i++) {
+      const list = nodes[i].classList;
+      if (list.contains('active')) {
+        nodes[i].classList.remove('active');
+        this.selectTags[`item-${type}`] = true;
+      } else {
+        nodes[i].classList.add('active');
+        this.selectTags[`item-${type}`] = false;
+      }
+    }
+  }
+
+  compositeEnd = () => {
+    console.log('comp end');
+    if (this.inputLock) {
+      this.inputLock = false;
+      this.checkValid();
+    }
+  }
+
+  compositeStart = () => {
+    console.log('comp start');
+    this.inputLock = true;
+  }
+
+  checkValid = () => {
+    const input = document.querySelector('.song-input') as HTMLInputElement;
+    if (input && input.value && input.value.length < 10) {
+      return true;
+    }
+    alert('请勿超过十个字');
+    input.value = input.value.slice(0,10);
+    return false;
   }
   
   render() {
@@ -472,24 +328,36 @@ class App extends React.Component {
         </div>
         <div className="section scene7">
           <img src={Letter} alt="scene-7-letter" className="el-letter opacity0"/>
-          <img src={ConfrimBtn} alt="scene-7-btn" className="el-confirm opacity0"/>
+          <div className="el-confirm opacity0"
+            onTouchStart={() => { this.touchConfirm(true); }}
+            onTouchEnd={() => { this.touchConfirm(false); }}>
+          </div>
           <div className="tag-container">
+            <div className="input-container">
+              <input type="text" className="song-input" placeholder="自定义歌曲名"
+                onCompositionEnd={this.compositeEnd}
+                onCompositionStart={this.compositeStart}
+                onInput={this.checkInputValid}
+              />
+            </div>
             <Slider speed={20}>
+              <div className="tag-row">
+                <div className="tag-item item-a" onClick={this.handleClickTag} data-type="a" >爱拼才会赢</div>
+                <div className="tag-item item-b" onClick={this.handleClickTag} data-type="b">未来不是梦</div>
+                <div className="tag-item item-c" onClick={this.handleClickTag} data-type="c">我真的很不错</div>
+                <div className="tag-item item-d" onClick={this.handleClickTag} data-type="d">壮志在我胸</div>
+              </div>
               <div className="tag-row margin-row">
-                <img src={Tag} alt="tag" className="tag-item" onClick={this.handleClickTag}/>
-                <img src={Tag} alt="tag" className="tag-item"/>
-                <img src={Tag} alt="tag" className="tag-item"/>
+                <div className="tag-item item-e" onClick={this.handleClickTag} data-type="e">哈哈哈哈</div>
+                <div className="tag-item item-f" onClick={this.handleClickTag} data-type="f">好嗨哟</div>
+                <div className="tag-item item-g" onClick={this.handleClickTag} data-type="g">好嗨哟</div>
+                <div className="tag-item item-h" onClick={this.handleClickTag} data-type="h">C位出道</div>
               </div>
               <div className="tag-row">
-                <img src={Tag} alt="tag" className="tag-item"/>
-                <img src={Tag} alt="tag" className="tag-item"/>
-                <img src={Tag} alt="tag" className="tag-item"/>
-                <img src={Tag} alt="tag" className="tag-item"/>
-              </div>
-              <div className="tag-row margin-row">
-                <img src={Tag} alt="tag" className="tag-item"/>
-                <img src={Tag} alt="tag" className="tag-item"/>
-                <img src={Tag} alt="tag" className="tag-item"/>
+                <div className="tag-item item-i" onClick={this.handleClickTag} data-type="i">佛系少年</div>
+                <div className="tag-item item-j" onClick={this.handleClickTag} data-type="j">葛优瘫</div>
+                <div className="tag-item item-k" onClick={this.handleClickTag} data-type="k">断舍离</div>
+                <div className="tag-item item-l" onClick={this.handleClickTag} data-type="l">神马都是浮云</div>
               </div>
             </Slider>
           </div>

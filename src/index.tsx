@@ -12,6 +12,7 @@ window.addEventListener('resize', function () {
 window.addEventListener('orientationchange', function () {
   setDocHeight();
 });
+setDocHeight();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const vConsole = new VConsole();

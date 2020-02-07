@@ -110,9 +110,7 @@ export class Slider extends Component<ISliderProps, ISliderState> {
   }
 
   onDragStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    console.log('start', e);
-    const { pageX, pageY } = e.touches[0];
-    console.log(pageX, pageY);
+    const { pageX } = e.touches[0];
     this.onStop();
 
     this.oldScrollLeft = this.state.wrapper?.scrollLeft;
@@ -120,9 +118,7 @@ export class Slider extends Component<ISliderProps, ISliderState> {
   }
 
   onDragEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-    console.log('end', e);
-    const {clientX, clientY} = e.changedTouches[0];
-    console.log(clientX, clientY);
+    // const {clientX, clientY} = e.changedTouches[0];
     this.onStart();
     this.oldScrollLeft = undefined;
     this.touchX = 0;
@@ -131,9 +127,7 @@ export class Slider extends Component<ISliderProps, ISliderState> {
   onDrag = (e: React.TouchEvent<HTMLDivElement>) => {
 
     const { contentRef, wrapper } = this.state;
-    console.log('drag: ', e);
-    const {pageX, pageY} = e.touches[0];
-    console.log(pageX, pageY);
+    const { pageX } = e.touches[0];
 
     const distance = pageX - this.touchX;
     let temp = (this.oldScrollLeft || 0) - distance;

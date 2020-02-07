@@ -234,7 +234,7 @@
 
 .el-hand2 {
   position: absolute;
-  width: 90%;
+  width: 84%;
   left: 50%;
   transform: translate3d(-50%,0,0);
   bottom: 0%;
@@ -258,6 +258,10 @@
   background: center / cover no-repeat url('./assets/bg-scene7.png');
 }
 
+.scene7 * {
+  user-select: none;
+}
+
 .el-letter {
   position: absolute;
   width: 100%;
@@ -268,9 +272,20 @@
 .el-confirm {
   position: absolute;
   width: 40%;
+  height: 10%;
   bottom: 15%;
   left: 50%;
   transform: translateX(-50%);
+  background: url('./assets/confirm-btn.png') no-repeat;
+  background-size: contain;
+  background-position-y: bottom;
+  user-select: none;
+}
+
+.el-confirm.touch {
+  background: url('./assets/confirm-btn_touch.jpg') no-repeat; 
+  background-size: contain;
+  background-position-y: bottom;
 }
 
 @keyframes rotateUp {
@@ -311,9 +326,9 @@
 
 .tag-container {
   position: relative;
-  width: 90%;
+  width: 88%;
   margin: 0 auto;
-  top: 53%;
+  top: 52%;
 }
 
 .str_move {
@@ -329,7 +344,13 @@
 }
 
 .tag-container .tag-item {
+  display: inline-block;
   width: 6rem;
+  height: 2rem;
+  line-height: 2rem;
+  background: center / cover url('./assets/tag.png') no-repeat;
+  font-size: 0.8rem;
+  margin-left: 0.8rem;
 }
 
 .tag-click {
@@ -338,4 +359,40 @@
 
 .margin-row {
   margin-left: 50px;
+}
+
+/* 自定义歌曲名输入框 */
+.input-container {
+  width: 8rem;
+  height: 2rem;
+  margin: 0 auto;
+  background: center / contain url('./assets/input.png') no-repeat;
+  margin-bottom: 0.3rem;
+}
+
+.input-container input[type='text'] {
+  user-select: auto;
+  width: 8rem;
+  height: 2rem;
+  line-height: 2rem;
+  background: transparent;
+  outline: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-size: 0.8rem;
+  color: black;
+  border: none;
+  padding: 0;
+  text-align: center; /* 居中显示 */
+}
+
+/* 标签选中的样式 */
+.active {
+  color: #e2806a;
+  font-weight: bold;
+}
+
+.none {
+  display: none;
 }
