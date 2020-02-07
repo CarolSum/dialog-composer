@@ -122,6 +122,11 @@ class App extends React.Component {
   // 保存用户选择的标签
   private selectTags: { [key: string]: boolean } = {};
 
+  // iOS端：记录focus时的 scrollTop 值
+  private tempScrollTop: number | undefined;
+  private scrollOffset: number | undefined;
+  private focusLock: boolean = false;
+
   setOriginPoint = (e: TouchEvent) => {
     if (e.touches.length) {
       const touchPoint = e.touches[0];
@@ -145,29 +150,76 @@ class App extends React.Component {
     window.addEventListener('mousewheel', stopWheel, { passive: false });
 
     // 记录点击位置
-    window.addEventListener('touchstart', this.setOriginPoint, false);
+    document.addEventListener('touchstart', this.setOriginPoint);
 
     // 监听滑动事件, 移动端没有 mousemove 事件
-    window.addEventListener('touchmove', this.handleMouseMove,  { passive: false });
+    document.addEventListener('touchmove', this.handleMouseMove,  { passive: false });
 
-    window.addEventListener('touchend', this.clearPoint, false);
+    document.addEventListener('touchend', this.clearPoint);
 
     document.body.style.overflow = 'hidden';
+
+    //利用捕获事件监听输入框等focus动作
+    document.body.addEventListener("focus", this.handleInputFocus, true);
+    //因为存在软键盘显示而屏幕大小还没被改变，所以以窗体（屏幕显示）大小改变为准
+    window.addEventListener("resize", function(e) {
+      console.log('resize');
+      e.preventDefault();
+    }, { capture: true, passive: true });
+
+    window.addEventListener('scroll', this.handleWindowScroll);
+
+    document.body.addEventListener('blur', this.handleInputBlur, true);
   }
 
   componentWillUnmount() {
     window.removeEventListener('DOMMouseScroll', stopWheel);
     window.removeEventListener('mousewheel', stopWheel);
+    window.removeEventListener('scroll', this.handleWindowScroll);
 
-    window.removeEventListener('touchstart', this.setOriginPoint, false);
-    window.removeEventListener('touchmove', this.handleMouseMove, false);
-    window.removeEventListener('touchend', this.clearPoint, false);
+    document.removeEventListener('touchstart', this.setOriginPoint);
+    document.removeEventListener('touchmove', this.handleMouseMove);
+    document.removeEventListener('touchend', this.clearPoint);
+
+    document.body.removeEventListener("focus", this.handleInputFocus, true);
+    document.body.removeEventListener('blur', this.handleInputBlur, true);
+  }
+
+  handleWindowScroll = () => {
+    console.log('scroll');
+    console.log(window.innerHeight);
+    console.log(document.scrollingElement?.scrollTop);
+    if (this.focusLock && this.tempScrollTop) {
+      if (document.scrollingElement && document.scrollingElement.scrollTop !== this.tempScrollTop) {
+        this.scrollOffset = document.scrollingElement.scrollTop - this.tempScrollTop;
+      }
+    }
+  }
+
+  handleInputFocus = () => {
+    console.log('focus');
+    console.log(window.innerHeight);
+    console.log(document.scrollingElement?.scrollTop);
+    this.tempScrollTop = document.scrollingElement?.scrollTop;
+    this.focusLock = true;
+  }
+
+  handleInputBlur = () => {
+    this.focusLock = false;
+    if (this.scrollOffset) {
+      if (document.scrollingElement) {
+        document.scrollingElement.scrollTop -= this.scrollOffset;
+      }
+      this.scrollOffset = undefined;
+    }
   }
 
   handleMouseMove = (e: TouchEvent) => {
+    e.preventDefault();
+
     if (!e.touches.length) return;
     const point = e.touches[0];
-    if (!point.screenX || !point.screenY || tid) return;
+    if (!point.screenX || !point.screenY || tid || this.focusLock) return;
 
     if (this.originX && this.originY) {
       const deltaY = Math.abs(point.screenY - this.originY);
@@ -178,7 +230,6 @@ class App extends React.Component {
         this.clearPoint();
       }
     }
-    e.preventDefault();
   }
 
   switchScene(dir: boolean) {
@@ -338,6 +389,7 @@ class App extends React.Component {
                 onCompositionEnd={this.compositeEnd}
                 onCompositionStart={this.compositeStart}
                 onInput={this.checkInputValid}
+                // onFocus={}
               />
             </div>
             <Slider speed={20}>
