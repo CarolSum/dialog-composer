@@ -161,9 +161,11 @@ class App extends React.Component {
 
     //利用捕获事件监听输入框等focus动作
     document.body.addEventListener("focus", this.handleInputFocus, true);
-    //因为存在软键盘显示而屏幕大小还没被改变，所以以窗体（屏幕显示）大小改变为准
+
+    // 阻止滚动时安卓浏览器发生的 resize 事件，避免导航栏工具栏消失
     window.addEventListener("resize", function(e) {
       console.log('resize');
+      console.log(window.innerHeight);
       e.preventDefault();
     }, { capture: true, passive: true });
 
@@ -186,9 +188,9 @@ class App extends React.Component {
   }
 
   handleWindowScroll = () => {
-    console.log('scroll');
-    console.log(window.innerHeight);
-    console.log(document.scrollingElement?.scrollTop);
+    // console.log('scroll');
+    // console.log(window.innerHeight);
+    // console.log(document.scrollingElement?.scrollTop);
     if (this.focusLock && this.tempScrollTop) {
       if (document.scrollingElement && document.scrollingElement.scrollTop !== this.tempScrollTop) {
         this.scrollOffset = document.scrollingElement.scrollTop - this.tempScrollTop;

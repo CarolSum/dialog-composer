@@ -1,4 +1,6 @@
 export function setDocHeight() {
+  console.log('set doc height');
+  console.log(window.innerHeight);
   document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
 };
 
