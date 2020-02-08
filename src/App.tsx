@@ -19,8 +19,6 @@ import Scene4Subway from './assets/subway-scene4.png';
 import Scene5Hand from './assets/hand-scene5.png';
 // scene 6
 import Scene6Hand from './assets/hand-scene6.png';
-// scene 7
-import Letter from './assets/letter.png';
 
 import { cubicBezier, stopWheel, animateCSS } from './utils';
 import { Slider } from './components/slider/slide';
@@ -408,7 +406,7 @@ class App extends React.Component {
                 <div className="tag-row margin-row">
                   <div className="tag-item item-e" onClick={this.handleClickTag} data-type="e">哈哈哈哈</div>
                   <div className="tag-item item-f" onClick={this.handleClickTag} data-type="f">好嗨哟</div>
-                  <div className="tag-item item-g" onClick={this.handleClickTag} data-type="g">好嗨哟</div>
+                  <div className="tag-item item-g" onClick={this.handleClickTag} data-type="g">小幸运</div>
                   <div className="tag-item item-h" onClick={this.handleClickTag} data-type="h">C位出道</div>
                 </div>
                 <div className="tag-row">
@@ -420,7 +418,6 @@ class App extends React.Component {
               </Slider>
             </div>
           </div>
-          {/* <img src={Letter} alt="scene-7-letter" className="el-letter opacity0"/> */}
           <div className="el-confirm opacity0"
             onTouchStart={() => { this.touchConfirm(true); }}
             onTouchEnd={() => { this.touchConfirm(false); }}>
