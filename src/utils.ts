@@ -12,17 +12,24 @@ export function stopWheel(e: any) {
 
 export function animateCSS(element: string, animationName: string[], callback?: any) {
   const node = document.querySelector(element);
-  if (!node) return;
-  node.classList.add('animated', ...animationName);
+  if (!node) return Promise.resolve(true);
 
-  function handleAnimationEnd() {
-    if (!node) return;
-    node.classList.remove('animated', ...animationName);
-    node.removeEventListener('animationend', handleAnimationEnd);
-    if (typeof callback === 'function') callback();
-  }
-
-  node.addEventListener('animationend', handleAnimationEnd);
+  return new Promise((resolve, reject) => {
+    node.classList.add('animated', ...animationName);
+    
+    function handleAnimationEnd() {
+      if (!node) {
+        reject(false);
+        return;
+      }
+      node.classList.remove('animated', ...animationName);
+      node.removeEventListener('animationend', handleAnimationEnd);
+      if (typeof callback === 'function') callback();
+      resolve(true);
+    }
+  
+    node.addEventListener('animationend', handleAnimationEnd);
+  });
 }
 
 

@@ -323,7 +323,7 @@
 
 
 .scene8 {
-  /* background: center / cover no-repeat url('./assets/bg-scene8.jpeg'); */
+  background: center / cover no-repeat url('./assets/bg-scene8.jpeg');
   display: flex;
   justify-content: center;
   align-items: center;
@@ -332,7 +332,7 @@
 .iyrics-container {
   width: 95%;
   height: 90%;
-  background: center / contain no-repeat url('./assets/bg-lyrics.jpg');
+  background: center / contain no-repeat url('./assets/bg-lyrics.png');
 }
 
 .tag-container {

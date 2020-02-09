@@ -76,7 +76,6 @@ export class Slider extends Component<ISliderProps, ISliderState> {
   }
 
   componentDidUpdate() {
-    console.log('will update');
     this.updateWrapperSize();
   }
 
@@ -125,7 +124,6 @@ export class Slider extends Component<ISliderProps, ISliderState> {
   }
 
   onDrag = (e: React.TouchEvent<HTMLDivElement>) => {
-
     const { contentRef, wrapper } = this.state;
     const { pageX } = e.touches[0];
 

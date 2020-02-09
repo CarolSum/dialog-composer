@@ -37,7 +37,7 @@ let tid: NodeJS.Timeout | undefined;
 const getCurrentBezierPoint = cubicBezier([0, 0], [0.0, 0], [0.0, 1], [1, 1]);
 let tempClsMap: { [key: string] : ITempCls } = {};
 
-function animate(config: IAniFrame) {
+async function animate(config: IAniFrame) {
   const target = document.querySelector(config.selector);
   if (!target) return;
   // 动画前预处理
@@ -72,7 +72,8 @@ function animate(config: IAniFrame) {
   }
 
   // 执行指定动画
-  animateCSS(config.selector, config.aniCls, function() {
+  const res = await animateCSS(config.selector, config.aniCls);
+  if (res) {
     // 动画后处理
     if (config.addAfterAnimation) {
       // 添加一些样式以覆盖初始值
@@ -95,7 +96,10 @@ function animate(config: IAniFrame) {
         animate(subCfg);
       });
     }
-  })
+  }
+  // animateCSS(config.selector, config.aniCls, function() {
+    
+  // })
 }
 
 // 清理上次转场时添加/删除的临时样式
@@ -109,9 +113,13 @@ function cleanUpScene() {
   tempClsMap = {};
 }
 
-class App extends React.Component {
+interface IAppState {
+  sectionId: number;
+}
 
-  private sectionId: number = 0;
+class App extends React.Component<{}, IAppState> {
+
+  // private sectionId: number = 0;
   private originX: number | null = 0;
   private originY: number | null = 0;
 
@@ -124,6 +132,13 @@ class App extends React.Component {
   private tempScrollTop: number | undefined;
   private scrollOffset: number | undefined;
   private focusLock: boolean = false;
+
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      sectionId: 0,
+    };
+  }
 
   setOriginPoint = (e: TouchEvent) => {
     if (e.touches.length) {
@@ -240,21 +255,29 @@ class App extends React.Component {
     }
   }
 
-  switchScene(dir: boolean) {
+  async switchScene(dir: boolean) {
+    const { sectionId } = this.state;
     if (dir) {
-      console.log('sid: ', this.sectionId);
-      if (this.sectionId >= 8) return;
-      H = this.getSectionList()[this.sectionId].getBoundingClientRect().height;
+      console.log('sid: ', sectionId);
+      if (sectionId >= 8) return;
+      H = this.getSectionList()[sectionId].getBoundingClientRect().height;
       // 差值更新 document.scrollintElement.scrollTop
-      this.interpolate(1);
+      await this.interpolate(1);
 
-      this.sectionId += 1;
+      this.setState({
+        sectionId: sectionId + 1,
+      });
+      this.transition();
     } else {
-      console.log('sid: ', this.sectionId);
-      if (this.sectionId <= 0) return;
-      H = this.getSectionList()[this.sectionId].getBoundingClientRect().height;
-      this.interpolate(-1);
-      this.sectionId -= 1;
+      console.log('sid: ', sectionId);
+      if (sectionId <= 0) return;
+      H = this.getSectionList()[sectionId].getBoundingClientRect().height;
+      await this.interpolate(-1);
+
+      this.setState({
+        sectionId: sectionId - 1,
+      });
+      this.transition();
     }
   }
 
@@ -263,42 +286,51 @@ class App extends React.Component {
       if (e.target.value && e.target.value.length > 10) {
         alert('请勿超过十个字');
         e.target.value = e.target.value.slice(0,10);
+        e.target.blur();
         return false;
       }
     }
     return true;
   }
 
+  /**
+   * 差值更新 scrollTop 模拟滚动
+   * @param abs 正表示向下屏滚动；负表示向上屏滚动
+   */
   interpolate(abs: number) {
-    const scrollingElement = document.scrollingElement;
-    if (tid || !H || !scrollingElement) return;
-    const sTop = scrollingElement.scrollTop;
-    const curTime = Date.now();
-
-    tid = setInterval(() => {
-      const t = Date.now();
-      const diff = t - curTime;
-      const percent = diff / totalTime;
-
-      if (diff >= totalTime) {
-        scrollingElement.scrollTop = sTop + H * abs;
-
-        tid && clearInterval(tid);
-        tid = undefined;
-
-       // 清理工作
-       cleanUpScene();
-       this.transition();
-      } else {
-        const [x, y] = getCurrentBezierPoint(percent);
-        scrollingElement.scrollTop = sTop + y * H * abs;
-      }
-    }, 0);
+    return new Promise((resolve, reject) => {
+      const scrollingElement = document.scrollingElement;
+      if (tid || !H || !scrollingElement) return;
+      const sTop = scrollingElement.scrollTop;
+      const curTime = Date.now();
+  
+      tid = setInterval(() => {
+        const t = Date.now();
+        const diff = t - curTime;
+        const percent = diff / totalTime;
+  
+        if (diff >= totalTime) {
+          scrollingElement.scrollTop = sTop + H * abs;
+  
+          tid && clearInterval(tid);
+          tid = undefined;
+  
+          // 清理工作
+          cleanUpScene();
+          // promise resolve
+          resolve();
+        } else {
+          const [x, y] = getCurrentBezierPoint(percent);
+          scrollingElement.scrollTop = sTop + y * H * abs;
+        }
+      }, 0);
+    });
   }
 
   transition() {
-    if (this.sectionId < 0 || this.sectionId > 8) return;
-    const frames = animationGroup[this.sectionId];
+    const { sectionId } = this.state;
+    if (sectionId < 0 || sectionId > 8) return;
+    const frames = animationGroup[sectionId];
     if (!frames) return;
     frames.forEach((frame) => {
       animate(frame);
@@ -350,10 +382,13 @@ class App extends React.Component {
     }
     alert('请勿超过十个字');
     input.value = input.value.slice(0,10);
+    input.blur();
     return false;
   }
   
   render() {
+    const { sectionId } = this.state;
+
     return (
       <div className="App">
         <div className="section scene0">
@@ -396,26 +431,28 @@ class App extends React.Component {
                   // onFocus={}
                 />
               </div>
-              <Slider speed={20}>
-                <div className="tag-row">
-                  <div className="tag-item item-a" onClick={this.handleClickTag} data-type="a" >爱拼才会赢</div>
-                  <div className="tag-item item-b" onClick={this.handleClickTag} data-type="b">未来不是梦</div>
-                  <div className="tag-item item-c" onClick={this.handleClickTag} data-type="c">我真的很不错</div>
-                  <div className="tag-item item-d" onClick={this.handleClickTag} data-type="d">壮志在我胸</div>
-                </div>
-                <div className="tag-row margin-row">
-                  <div className="tag-item item-e" onClick={this.handleClickTag} data-type="e">哈哈哈哈</div>
-                  <div className="tag-item item-f" onClick={this.handleClickTag} data-type="f">好嗨哟</div>
-                  <div className="tag-item item-g" onClick={this.handleClickTag} data-type="g">小幸运</div>
-                  <div className="tag-item item-h" onClick={this.handleClickTag} data-type="h">C位出道</div>
-                </div>
-                <div className="tag-row">
-                  <div className="tag-item item-i" onClick={this.handleClickTag} data-type="i">佛系少年</div>
-                  <div className="tag-item item-j" onClick={this.handleClickTag} data-type="j">葛优瘫</div>
-                  <div className="tag-item item-k" onClick={this.handleClickTag} data-type="k">断舍离</div>
-                  <div className="tag-item item-l" onClick={this.handleClickTag} data-type="l">神马都是浮云</div>
-                </div>
-              </Slider>
+              {sectionId === 7 && (
+                <Slider speed={20}>
+                  <div className="tag-row">
+                    <div className="tag-item item-a" onClick={this.handleClickTag} data-type="a" >爱拼才会赢</div>
+                    <div className="tag-item item-b" onClick={this.handleClickTag} data-type="b">未来不是梦</div>
+                    <div className="tag-item item-c" onClick={this.handleClickTag} data-type="c">我真的很不错</div>
+                    <div className="tag-item item-d" onClick={this.handleClickTag} data-type="d">壮志在我胸</div>
+                  </div>
+                  <div className="tag-row margin-row">
+                    <div className="tag-item item-e" onClick={this.handleClickTag} data-type="e">哈哈哈哈</div>
+                    <div className="tag-item item-f" onClick={this.handleClickTag} data-type="f">好嗨哟</div>
+                    <div className="tag-item item-g" onClick={this.handleClickTag} data-type="g">小幸运</div>
+                    <div className="tag-item item-h" onClick={this.handleClickTag} data-type="h">C位出道</div>
+                  </div>
+                  <div className="tag-row">
+                    <div className="tag-item item-i" onClick={this.handleClickTag} data-type="i">佛系少年</div>
+                    <div className="tag-item item-j" onClick={this.handleClickTag} data-type="j">葛优瘫</div>
+                    <div className="tag-item item-k" onClick={this.handleClickTag} data-type="k">断舍离</div>
+                    <div className="tag-item item-l" onClick={this.handleClickTag} data-type="l">神马都是浮云</div>
+                  </div>
+                </Slider>
+              )}
             </div>
           </div>
           <div className="el-confirm opacity0"
