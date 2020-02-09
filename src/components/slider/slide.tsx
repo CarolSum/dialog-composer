@@ -79,12 +79,6 @@ export class Slider extends Component<ISliderProps, ISliderState> {
     this.updateWrapperSize();
   }
 
-  componentWillReceiveProps(nextProps: ISliderProps) {
-    if (this.props.speed !== nextProps.speed) {
-      this.onStart(nextProps.speed);
-    }
-  }
-
   updateWrapperSize= () => {
     const { contentRef, copyRef, wrapper } = this.state;
     
