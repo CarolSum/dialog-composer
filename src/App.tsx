@@ -193,6 +193,8 @@ class App extends React.Component<{}, IAppState> {
         (nodes[0] as HTMLElement).style.height = `${window.innerWidth * 1.666}px`;
       }
     }, 100);
+
+    this.transition();
   }
 
   componentWillUnmount() {
@@ -395,19 +397,47 @@ class App extends React.Component<{}, IAppState> {
           <div className="subway-container">
             <img src={Subway} alt="subway" className="el-subway"/>
           </div>
+          <div className="intro1 pt-1rem pl-1rem pr-1rem opacity0">
+            <div className="textarea">
+              <div className="abs-wrapper">
+                <span>又是新的一天，出门上班啦，阳光正好，路上人不少。</span>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="section scene1">
           <img src={CoffeeText} alt="coffee" className="el-coffee opacity0"/>
           <img src={ScanQRcode} alt="scan" className="el-scan opacity0"/>
+          <div className="intro2 pt-1rem pl-1rem pr-1rem opacity0">
+            <div className="textarea">
+              <div className="abs-wrapper">
+                <span>买早餐没带现金？移动支付更便利。咖啡和阳光更配哦~</span>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="section scene2">
           <img src={Scene2Subway} alt="scene-2-subway" className="el-subway2 opacity0"/>
           <img src={Scene2Bus} alt="scene-2-bus" className="el-bus opacity0"/>
           <img src={Scene2Bike} alt="scene-2-bike" className="el-bike opacity0"/>
+          <div className="intro3 pt-1rem pl-1rem pr-1rem opacity0">
+            <div className="textarea">
+              <div className="abs-wrapper">
+                <span>上班方式花样多，每天地铁公交小黄车轮着来。今天骑上小单车走咯~</span>
+              </div>
+            </div>
+          </div> 
         </div>
         <div className="section scene3">
           <img src={Scene3Takeaway} alt="scene-3-takeaway" className="el-takeaway opacity0"/>
           <img src={Scene3Text} alt="scene-3-text" className="el-takeaway-text opacity0"/>
+          <div className="intro4 pt-1rem pl-1rem pr-1rem opacity0">
+            <div className="textarea">
+              <div className="abs-wrapper">
+                <span>下班回家偷个懒，点个外卖不做饭。说曹操曹操到，外卖小哥来啦。</span>
+              </div>
+            </div>
+          </div> 
         </div>
         <div className="section scene4">
           <div className="subway-container">
@@ -416,9 +446,23 @@ class App extends React.Component<{}, IAppState> {
         </div>
         <div className="section scene5">
           <img src={Scene5Hand} alt="scene-5-hand" className="el-hand opacity0"/>
+          <div className="intro6 pt-1rem pl-1rem pr-1rem opacity0">
+            <div className="textarea">
+              <div className="abs-wrapper">
+                <span>城市方便你我他，守护城市靠大家。垃圾分类成习惯，今天你分类了吗~</span>
+              </div>
+            </div>
+          </div> 
         </div>
         <div className="section scene6">
           <img src={Scene6Hand} alt="scene-6-hand" className="el-hand2 opacity0"/>
+          <div className="intro7 pt-1rem pl-1rem pr-1rem opacity0">
+            <div className="textarea">
+              <div className="abs-wrapper">
+                <span>买东西不出门，网上下单隔天就到，取个快递回家啦，让我看看到了啥？</span>
+              </div>
+            </div>
+          </div> 
         </div>
         <div className="section scene7">
           <div className="letter-wrapper opacity0">

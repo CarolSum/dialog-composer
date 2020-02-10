@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'shitisemi';
+  src: url('assets/shiti-semibold.ttf') format('truetype');
+  font-weight: 800;
+}
+
+
 .App {
   text-align: center;
 }
@@ -55,6 +62,17 @@
   opacity: 1;
 }
 
+.pt-1rem {
+  padding-top: 1rem;
+}
+
+.pl-1rem {
+  padding-left: 1rem;
+}
+
+.pr-1rem {
+  padding-right: 1rem;
+}
 
 .scene1 {
   background-color: black;
@@ -116,6 +134,37 @@
   width: 35%;
   top: 25%;
   left: 21.2%;
+}
+
+div.textarea {
+  position: relative;
+  background: url('./assets/textarea.png') no-repeat;
+  background-size: 100%;
+  font-family: 'shitisemi';
+  color: #282c34;
+  line-height: 1.5rem;
+  font-size: 1.2rem;
+}
+
+div.textarea:before {
+  content: '';
+  display: block;
+  padding-top: 37%;
+}
+
+.abs-wrapper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.abs-wrapper span {
+  margin: 0 1.2rem;
 }
 
 .scene1 {

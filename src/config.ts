@@ -16,6 +16,12 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['lr-circle', 'infinite'],
       addAfterAnimation: [],
       removeBeforeAnimation: [],
+    },
+    {
+      selector: '.intro1',
+      aniCls: ['fadeIn'],
+      addAfterAnimation: ['opacity1'],
+      removeBeforeAnimation: ['opacity0']
     }
   ],
   // scene 1
@@ -32,6 +38,14 @@ export const animationGroup: IAniFrame[][] = [
           removeBeforeAnimation: ['opacity0'],
           aniCls: ['slideInUp'],
           addAfterAnimation: ['opacity1'],  // 动画结束后添加的样式类，用于覆盖原来的样式
+          children: [
+            {
+              selector: '.intro2',
+              aniCls: ['fadeIn'],
+              addAfterAnimation: ['opacity1'],
+              removeBeforeAnimation: ['opacity0'] 
+            }
+          ]
         }
       ],
     }
@@ -55,6 +69,14 @@ export const animationGroup: IAniFrame[][] = [
           removeBeforeAnimation: ['opacity0'],
           aniCls: ['slideInUp'],
           addAfterAnimation: ['opacity1'],
+          children: [
+            {
+              selector: '.intro3',
+              aniCls: ['fadeIn'],
+              addAfterAnimation: ['opacity1'],
+              removeBeforeAnimation: ['opacity0'] 
+            }
+          ]
         }
       ]
     }
@@ -72,6 +94,14 @@ export const animationGroup: IAniFrame[][] = [
           aniCls: ['fadeIn'],
           addAfterAnimation: ['opacity1'],
           removeBeforeAnimation: ['opacity0'],
+          children: [
+            {
+              selector: '.intro4',
+              aniCls: ['fadeIn'],
+              addAfterAnimation: ['opacity1'],
+              removeBeforeAnimation: ['opacity0'] 
+            },
+          ]
         },
       ]
     },
@@ -92,6 +122,14 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['slideInUp'],
       removeBeforeAnimation: ['opacity0'],
       addAfterAnimation: ['opacity1'],
+      children: [
+        {
+          selector: '.intro6',
+          aniCls: ['fadeIn'],
+          addAfterAnimation: ['opacity1'],
+          removeBeforeAnimation: ['opacity0']  
+        } 
+      ]
     }
   ],
   // scene 6
@@ -101,6 +139,14 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['slideInCenterUp'],
       removeBeforeAnimation: ['opacity0'],
       addAfterAnimation: ['opacity1'],
+      children: [
+        {
+          selector: '.intro7',
+          aniCls: ['fadeIn'],
+          addAfterAnimation: ['opacity1'],
+          removeBeforeAnimation: ['opacity0']  
+        },
+      ]
     }
   ],
   // scene 7
