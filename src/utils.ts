@@ -55,3 +55,64 @@ export function cubicBezier(p1: [number, number], cp1: [number, number], cp2: [n
     return [x, y];
   };
 }
+
+export function setElementStyle(selector: string, obj: { [key: string] : string }) {
+  const nodes = document.getElementsByClassName('letter-wrapper');
+  if (nodes && nodes.length > 0) {
+    const node = nodes[0] as HTMLElement;
+    for (let k in obj) {
+      console.log(k, obj[k]);
+      (node.style as any)[k] = obj[k];
+    }
+  }
+}
+
+const Ow = 1280;
+const Oh = 2272;
+
+interface IPos{
+  left: number;
+  top: number;
+}
+
+export function measureLeft(left: number, top: number): IPos {
+  const { innerHeight, innerWidth } = window;
+
+  if ((Oh / Ow ) > (innerHeight / innerWidth)) {
+    // 高撑满，宽不足
+
+    // 背景图在窗口内的大小
+    const th = innerHeight;
+    const tw = th * Ow / Oh;
+
+    // 宽撑满之后的高
+    const Nh = th * (innerWidth / tw);
+    const newTop = (top * Nh - (Nh -innerHeight) / 2) / innerHeight;
+
+    return {
+      top: newTop,
+      left,
+    }
+  } else if ((Oh / Ow) < (innerHeight / innerWidth)) {
+    // 宽撑满，高不足
+
+    // 背景图在窗口内的大小
+    const tw = innerWidth;
+    const th = tw * (Oh / Ow);
+
+    // 高度撑满后的宽
+    const Nw = tw * (innerHeight / th);
+    const newLeft = (left * Nw - (Nw - innerWidth) / 2) / innerWidth;
+    return {
+      top,
+      left: newLeft,
+    };
+  } else {
+    // 表明图片尺寸和窗口大小比例一致
+    // 则根据图片中元素位置的比例返回
+    return {
+      top,
+      left,
+    }
+  }
+}

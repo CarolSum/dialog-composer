@@ -20,7 +20,7 @@ import Scene5Hand from './assets/hand-scene5.png';
 // scene 6
 import Scene6Hand from './assets/hand-scene6.png';
 
-import { cubicBezier, stopWheel, animateCSS } from './utils';
+import { cubicBezier, stopWheel, animateCSS, measureLeft, setElementStyle } from './utils';
 import { Slider } from './components/slider/slide';
 
 interface ITempCls {
@@ -193,6 +193,13 @@ class App extends React.Component<{}, IAppState> {
         (nodes[0] as HTMLElement).style.height = `${window.innerWidth * 1.666}px`;
       }
     }, 100);
+
+    // 计算背景图的缩放对一些元素百分比定位的影响
+    const sc1Subway = measureLeft(0.212, 0.25);
+    setElementStyle('.subway-container', {
+      left: `${sc1Subway.left * 100}%`,
+      top: `${sc1Subway.top * 100}%`,
+    });
 
     this.transition();
   }
