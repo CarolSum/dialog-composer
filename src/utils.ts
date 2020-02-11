@@ -57,9 +57,8 @@ export function cubicBezier(p1: [number, number], cp1: [number, number], cp2: [n
 }
 
 export function setElementStyle(selector: string, obj: { [key: string] : string }) {
-  const nodes = document.getElementsByClassName('letter-wrapper');
-  if (nodes && nodes.length > 0) {
-    const node = nodes[0] as HTMLElement;
+  const node = document.querySelector(selector) as HTMLElement;
+  if (node) {
     for (let k in obj) {
       console.log(k, obj[k]);
       (node.style as any)[k] = obj[k];
