@@ -115,6 +115,7 @@ function cleanUpScene() {
 
 interface IAppState {
   sectionId: number;
+  isMobile?: boolean;
 }
 
 class App extends React.Component<{}, IAppState> {
@@ -135,8 +136,12 @@ class App extends React.Component<{}, IAppState> {
 
   constructor(props: {}) {
     super(props);
+    let isMobile = true;
+    isMobile = /(iPhone|iPad|iPod|iOS|Android|SymbianOS|webOS)/i.test(navigator.userAgent);
+    
     this.state = {
       sectionId: 0,
+      isMobile,
     };
   }
 
@@ -229,9 +234,6 @@ class App extends React.Component<{}, IAppState> {
   }
 
   handleWindowScroll = () => {
-    // console.log('scroll');
-    // console.log(window.innerHeight);
-    // console.log(document.scrollingElement?.scrollTop);
     if (this.focusLock && this.tempScrollTop) {
       if (document.scrollingElement && document.scrollingElement.scrollTop !== this.tempScrollTop) {
         this.scrollOffset = document.scrollingElement.scrollTop - this.tempScrollTop;
@@ -240,9 +242,6 @@ class App extends React.Component<{}, IAppState> {
   }
 
   handleInputFocus = () => {
-    console.log('focus');
-    console.log(window.innerHeight);
-    console.log(document.scrollingElement?.scrollTop);
     this.tempScrollTop = document.scrollingElement?.scrollTop;
     this.focusLock = true;
   }
@@ -258,6 +257,9 @@ class App extends React.Component<{}, IAppState> {
   }
 
   handleMouseMove = (e: TouchEvent) => {
+    const { isMobile } = this.state;
+    if (!isMobile) return;
+
     e.preventDefault();
 
     if (!e.touches.length) return;
@@ -407,124 +409,140 @@ class App extends React.Component<{}, IAppState> {
   }
   
   render() {
-    const { sectionId } = this.state;
+    const { sectionId, isMobile } = this.state;
 
     return (
-      <div className="App">
-        <div className="section scene0">
-          <div className="subway-container">
-            <img src={Subway} alt="subway" className="el-subway"/>
+      <div>
+        {!isMobile && (
+          <div
+            style={{
+              width: '100%',
+              height: '100vh',
+              lineHeight: '100vh',
+              textAlign: 'center',
+            }}
+          >
+            不支持PC端浏览，请在手机端打开该页面
           </div>
-          <div className="intro1 pt-1rem pl-1rem pr-1rem opacity0">
-            <div className="textarea">
-              <div className="abs-wrapper">
-                <span>又是新的一天，出门上班啦，阳光正好，路上人不少。</span>
-              </div>
+        )}
+        {isMobile && (
+        <div className="App">
+          <div className="section scene0">
+            <div className="subway-container">
+              <img src={Subway} alt="subway" className="el-subway"/>
             </div>
-          </div>
-        </div>
-        <div className="section scene1">
-          <img src={CoffeeText} alt="coffee" className="el-coffee opacity0"/>
-          <img src={ScanQRcode} alt="scan" className="el-scan opacity0"/>
-          <div className="intro2 pt-1rem pl-1rem pr-1rem opacity0">
-            <div className="textarea">
-              <div className="abs-wrapper">
-                <span>买早餐没带现金？移动支付更便利。咖啡和阳光更配哦~</span>
+            <div className="intro1 pt-1rem pl-1rem pr-1rem opacity0">
+              <div className="textarea">
+                <div className="abs-wrapper">
+                  <span>又是新的一天，出门上班啦，阳光正好，路上人不少。</span>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div className="section scene2">
-          <img src={Scene2Subway} alt="scene-2-subway" className="el-subway2 opacity0"/>
-          <img src={Scene2Bus} alt="scene-2-bus" className="el-bus opacity0"/>
-          <img src={Scene2Bike} alt="scene-2-bike" className="el-bike opacity0"/>
-          <div className="intro3 pt-1rem pl-1rem pr-1rem opacity0">
-            <div className="textarea">
-              <div className="abs-wrapper">
-                <span>上班方式花样多，每天地铁公交小黄车轮着来。今天骑上小单车走咯~</span>
-              </div>
-            </div>
-          </div> 
-        </div>
-        <div className="section scene3">
-          <img src={Scene3Takeaway} alt="scene-3-takeaway" className="el-takeaway opacity0"/>
-          <img src={Scene3Text} alt="scene-3-text" className="el-takeaway-text opacity0"/>
-          <div className="intro4 pt-1rem pl-1rem pr-1rem opacity0">
-            <div className="textarea">
-              <div className="abs-wrapper">
-                <span>下班回家偷个懒，点个外卖不做饭。说曹操曹操到，外卖小哥来啦。</span>
-              </div>
-            </div>
-          </div> 
-        </div>
-        <div className="section scene4">
-          <div className="subway-container">
-            <img src={Scene4Subway} alt="scene-4-subway" className="el-subway3"/>
-          </div>
-        </div>
-        <div className="section scene5">
-          <img src={Scene5Hand} alt="scene-5-hand" className="el-hand opacity0"/>
-          <div className="intro6 pt-1rem pl-1rem pr-1rem opacity0">
-            <div className="textarea">
-              <div className="abs-wrapper">
-                <span>城市方便你我他，守护城市靠大家。垃圾分类成习惯，今天你分类了吗~</span>
-              </div>
-            </div>
-          </div> 
-        </div>
-        <div className="section scene6">
-          <img src={Scene6Hand} alt="scene-6-hand" className="el-hand2 opacity0"/>
-          <div className="intro7 pt-1rem pl-1rem pr-1rem opacity0">
-            <div className="textarea">
-              <div className="abs-wrapper">
-                <span>买东西不出门，网上下单隔天就到，取个快递回家啦，让我看看到了啥？</span>
-              </div>
-            </div>
-          </div> 
-        </div>
-        <div className="section scene7">
-          <div className="letter-wrapper opacity0">
-            <div className="tag-container">
-              <div className="input-container">
-                <input type="text" className="song-input" placeholder="自定义歌曲名"
-                  onCompositionEnd={this.compositeEnd}
-                  onCompositionStart={this.compositeStart}
-                  onInput={this.checkInputValid}
-                  // onFocus={}
-                />
-              </div>
-              {sectionId === 7 && (
-                <Slider speed={20}>
-                  <div className="tag-row">
-                    <div className="tag-item item-a" onClick={this.handleClickTag} data-type="a" >爱拼才会赢</div>
-                    <div className="tag-item item-b" onClick={this.handleClickTag} data-type="b">未来不是梦</div>
-                    <div className="tag-item item-c" onClick={this.handleClickTag} data-type="c">我真的很不错</div>
-                    <div className="tag-item item-d" onClick={this.handleClickTag} data-type="d">壮志在我胸</div>
-                  </div>
-                  <div className="tag-row margin-row">
-                    <div className="tag-item item-e" onClick={this.handleClickTag} data-type="e">哈哈哈哈</div>
-                    <div className="tag-item item-f" onClick={this.handleClickTag} data-type="f">好嗨哟</div>
-                    <div className="tag-item item-g" onClick={this.handleClickTag} data-type="g">小幸运</div>
-                    <div className="tag-item item-h" onClick={this.handleClickTag} data-type="h">C位出道</div>
-                  </div>
-                  <div className="tag-row">
-                    <div className="tag-item item-i" onClick={this.handleClickTag} data-type="i">佛系少年</div>
-                    <div className="tag-item item-j" onClick={this.handleClickTag} data-type="j">葛优瘫</div>
-                    <div className="tag-item item-k" onClick={this.handleClickTag} data-type="k">断舍离</div>
-                    <div className="tag-item item-l" onClick={this.handleClickTag} data-type="l">神马都是浮云</div>
-                  </div>
-                </Slider>
-              )}
             </div>
           </div>
-          <div className="el-confirm opacity0"
-            onTouchStart={() => { this.touchConfirm(true); }}
-            onTouchEnd={() => { this.touchConfirm(false); }}>
+          <div className="section scene1">
+            <img src={CoffeeText} alt="coffee" className="el-coffee opacity0"/>
+            <img src={ScanQRcode} alt="scan" className="el-scan opacity0"/>
+            <div className="intro2 pt-1rem pl-1rem pr-1rem opacity0">
+              <div className="textarea">
+                <div className="abs-wrapper">
+                  <span>买早餐没带现金？移动支付更便利。咖啡和阳光更配哦~</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="section scene2">
+            <img src={Scene2Subway} alt="scene-2-subway" className="el-subway2 opacity0"/>
+            <img src={Scene2Bus} alt="scene-2-bus" className="el-bus opacity0"/>
+            <img src={Scene2Bike} alt="scene-2-bike" className="el-bike opacity0"/>
+            <div className="intro3 pt-1rem pl-1rem pr-1rem opacity0">
+              <div className="textarea">
+                <div className="abs-wrapper">
+                  <span>上班方式花样多，每天地铁公交小黄车轮着来。今天骑上小单车走咯~</span>
+                </div>
+              </div>
+            </div> 
+          </div>
+          <div className="section scene3">
+            <img src={Scene3Takeaway} alt="scene-3-takeaway" className="el-takeaway opacity0"/>
+            <img src={Scene3Text} alt="scene-3-text" className="el-takeaway-text opacity0"/>
+            <div className="intro4 pt-1rem pl-1rem pr-1rem opacity0">
+              <div className="textarea">
+                <div className="abs-wrapper">
+                  <span>下班回家偷个懒，点个外卖不做饭。说曹操曹操到，外卖小哥来啦。</span>
+                </div>
+              </div>
+            </div> 
+          </div>
+          <div className="section scene4">
+            <div className="subway-container">
+              <img src={Scene4Subway} alt="scene-4-subway" className="el-subway3"/>
+            </div>
+          </div>
+          <div className="section scene5">
+            <img src={Scene5Hand} alt="scene-5-hand" className="el-hand opacity0"/>
+            <div className="intro6 pt-1rem pl-1rem pr-1rem opacity0">
+              <div className="textarea">
+                <div className="abs-wrapper">
+                  <span>城市方便你我他，守护城市靠大家。垃圾分类成习惯，今天你分类了吗~</span>
+                </div>
+              </div>
+            </div> 
+          </div>
+          <div className="section scene6">
+            <img src={Scene6Hand} alt="scene-6-hand" className="el-hand2 opacity0"/>
+            <div className="intro7 pt-1rem pl-1rem pr-1rem opacity0">
+              <div className="textarea">
+                <div className="abs-wrapper">
+                  <span>买东西不出门，网上下单隔天就到，取个快递回家啦，让我看看到了啥？</span>
+                </div>
+              </div>
+            </div> 
+          </div>
+          <div className="section scene7">
+            <div className="letter-wrapper opacity0">
+              <div className="tag-container">
+                <div className="input-container">
+                  <input type="text" className="song-input" placeholder="自定义歌曲名"
+                    onCompositionEnd={this.compositeEnd}
+                    onCompositionStart={this.compositeStart}
+                    onInput={this.checkInputValid}
+                    // onFocus={}
+                  />
+                </div>
+                {sectionId === 7 && (
+                  <Slider speed={20}>
+                    <div className="tag-row">
+                      <div className="tag-item item-a" onClick={this.handleClickTag} data-type="a" >爱拼才会赢</div>
+                      <div className="tag-item item-b" onClick={this.handleClickTag} data-type="b">未来不是梦</div>
+                      <div className="tag-item item-c" onClick={this.handleClickTag} data-type="c">我真的很不错</div>
+                      <div className="tag-item item-d" onClick={this.handleClickTag} data-type="d">壮志在我胸</div>
+                    </div>
+                    <div className="tag-row margin-row">
+                      <div className="tag-item item-e" onClick={this.handleClickTag} data-type="e">哈哈哈哈</div>
+                      <div className="tag-item item-f" onClick={this.handleClickTag} data-type="f">好嗨哟</div>
+                      <div className="tag-item item-g" onClick={this.handleClickTag} data-type="g">小幸运</div>
+                      <div className="tag-item item-h" onClick={this.handleClickTag} data-type="h">C位出道</div>
+                    </div>
+                    <div className="tag-row">
+                      <div className="tag-item item-i" onClick={this.handleClickTag} data-type="i">佛系少年</div>
+                      <div className="tag-item item-j" onClick={this.handleClickTag} data-type="j">葛优瘫</div>
+                      <div className="tag-item item-k" onClick={this.handleClickTag} data-type="k">断舍离</div>
+                      <div className="tag-item item-l" onClick={this.handleClickTag} data-type="l">神马都是浮云</div>
+                    </div>
+                  </Slider>
+                )}
+              </div>
+            </div>
+            <div className="el-confirm opacity0"
+              onTouchStart={() => { this.touchConfirm(true); }}
+              onTouchEnd={() => { this.touchConfirm(false); }}>
+            </div>
+          </div>
+          <div className="section scene8">
+            <div className="iyrics-container"></div>
           </div>
         </div>
-        <div className="section scene8">
-          <div className="iyrics-container"></div>
-        </div>
+        )}
       </div>
     );
   }
