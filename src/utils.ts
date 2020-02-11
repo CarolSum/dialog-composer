@@ -57,12 +57,14 @@ export function cubicBezier(p1: [number, number], cp1: [number, number], cp2: [n
 }
 
 export function setElementStyle(selector: string, obj: { [key: string] : string }) {
-  const node = document.querySelector(selector) as HTMLElement;
-  if (node) {
-    for (let k in obj) {
-      console.log(k, obj[k]);
-      (node.style as any)[k] = obj[k];
-    }
+  const nodes = document.querySelectorAll(selector);
+  if (nodes && nodes.length > 0) {
+    nodes.forEach(node => {
+      for (let k in obj) {
+        console.log(k, obj[k]);
+        ((node as HTMLElement).style as any)[k] = obj[k];
+      }
+    })
   }
 }
 

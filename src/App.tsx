@@ -200,6 +200,17 @@ class App extends React.Component<{}, IAppState> {
       left: `${sc1Subway.left * 100}%`,
       top: `${sc1Subway.top * 100}%`,
     });
+    const elSubway2 = measureLeft(0, 0.13);
+    setElementStyle('.el-subway2', {
+      left: `${elSubway2.left * 100}%`,
+      top: `${elSubway2.top * 100}%`,
+    });
+    const sc3Bus = measureLeft(0.324, 0.292);
+    setElementStyle('.el-bus', {
+      left: `${sc3Bus.left * 100}%`,
+      top: `${sc3Bus.top * 100}%`,
+    }); 
+
 
     this.transition();
   }

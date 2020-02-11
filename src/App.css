@@ -200,6 +200,7 @@ div.textarea:before {
   position: absolute;
   width: 64%;
   right: 4%;
+  /* left: 32.4%; */
   top: 29%;
 }
 
