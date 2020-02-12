@@ -52,7 +52,7 @@ class App extends React.Component<{}, IAppState> {
   getContent() {
     const { isMobile, isLoaded } = this.state;
 
-    const loadingClass = `loading ${isLoaded ? 'none' : ''}`;
+    const loadingClass = `loading-bg loading ${isLoaded ? 'none' : ''}`;
     const dialogCls = `${isLoaded ? 'visible' : 'hidden'}`;
 
     if (!isMobile) {

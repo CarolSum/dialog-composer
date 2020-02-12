@@ -44,6 +44,10 @@
   background: #61dafb;
 }
 
+.loading-bg {
+  background: center / cover no-repeat url('./assets/bg-loading.jpg');
+}
+
 .none {
   display: none;
 }

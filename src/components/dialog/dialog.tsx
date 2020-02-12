@@ -18,7 +18,7 @@ import Scene5Hand from '../../assets/hand-scene5.png';
 // scene 6
 import Scene6Hand from '../../assets/hand-scene6.png';
 
-import { cubicBezier, stopWheel, animateCSS, measureLeft, setElementStyle } from '../../utils';
+import { cubicBezier, animateCSS, measureLeft, setElementStyle } from '../../utils';
 import { Slider } from '../slider/slide';
 
 import './dialog.css';
