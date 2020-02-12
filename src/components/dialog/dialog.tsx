@@ -117,7 +117,12 @@ interface IDialogState {
   sectionId: number;
 }
 
-export default class DialogMain extends Component<{}, IDialogState> {
+interface IDialogProps {
+  setContentLoaded: () => void;
+  isLoaded: boolean;
+}
+
+export default class DialogMain extends Component<IDialogProps, IDialogState> {
 
   // private sectionId: number = 0;
   private originX: number | null = 0;
@@ -133,7 +138,7 @@ export default class DialogMain extends Component<{}, IDialogState> {
   private scrollOffset: number | undefined;
   private focusLock: boolean = false;
 
-  constructor(props: {}) {
+  constructor(props: IDialogProps) {
     super(props);
     
     this.state = {
@@ -173,6 +178,17 @@ export default class DialogMain extends Component<{}, IDialogState> {
     window.addEventListener('scroll', this.handleWindowScroll);
 
     document.body.addEventListener('blur', this.handleInputBlur, true);
+
+
+
+    window.onload = () => {
+      console.log('load');
+      this.props.setContentLoaded();
+      // 将状态置为 loaded 之后父组件会把loading页none掉, 保证在none掉之后才复位scrollTop;
+      setTimeout(() => {
+        document.scrollingElement!.scrollTop = 0;
+      }, 0);
+    }
 
     // 动态设置 scene7 信纸容器的高度
     setTimeout(() => {
@@ -238,6 +254,8 @@ export default class DialogMain extends Component<{}, IDialogState> {
   }
 
   handleMouseMove = (e: TouchEvent) => {
+    if (!this.props.isLoaded) return;
+
     e.preventDefault();
 
     if (!e.touches.length) return;
@@ -432,7 +450,7 @@ export default class DialogMain extends Component<{}, IDialogState> {
           <div className="intro4 pt-1rem pl-1rem pr-1rem opacity0">
             <div className="textarea">
               <div className="abs-wrapper">
-                <span>下班回家偷个懒，点个外卖不做饭。说曹操曹操到，外卖小哥来啦。</span>
+                <span>公司午餐不发愁，外卖美食花样多。说曹操曹操到，我的外卖到啦~</span>
               </div>
             </div>
           </div> 
@@ -441,6 +459,13 @@ export default class DialogMain extends Component<{}, IDialogState> {
           <div className="subway-container">
             <img src={Scene4Subway} alt="scene-4-subway" className="el-subway3"/>
           </div>
+          <div className="intro5 pt-1rem pl-1rem pr-1rem opacity0">
+            <div className="textarea">
+              <div className="abs-wrapper">
+                <span>忙碌了一天踏上熟悉的回家路，晚上9点半的星光，闪烁的是梦想和奋斗的光芒~</span>
+              </div>
+            </div>
+          </div> 
         </div>
         <div className="section scene5">
           <img src={Scene5Hand} alt="scene-5-hand" className="el-hand opacity0"/>

@@ -1,11 +1,12 @@
 import React from 'react';
 import './App.css';
 import { stopWheel } from './utils';
-
+import DialogMain from './components/dialog/dialog';
 interface IAppState {
   isMobile?: boolean;
+  isLoaded: boolean;
 }
-const DialogMain = React.lazy(() => import('./components/dialog/dialog'));
+// const DialogMain = React.lazy(() => import('./components/dialog/dialog'));
 
 class App extends React.Component<{}, IAppState> {
 
@@ -16,10 +17,10 @@ class App extends React.Component<{}, IAppState> {
     
     this.state = {
       isMobile,
+      isLoaded: false,
     };
   }
 
-  
   componentDidMount() {
     document.body.style.overflow = 'hidden';
 
@@ -40,33 +41,46 @@ class App extends React.Component<{}, IAppState> {
     window.removeEventListener('DOMMouseScroll', stopWheel);
     window.removeEventListener('mousewheel', stopWheel);
   }
-  
-  render() {
-    const { isMobile } = this.state;
 
+  setLoaded = () => {
+    console.log('setLoaded');
+    this.setState({
+      isLoaded: true,
+    });
+  }
+  
+  getContent() {
+    const { isMobile, isLoaded } = this.state;
+
+    const loadingClass = `loading ${isLoaded ? 'none' : ''}`;
+    const dialogCls = `${isLoaded ? 'visible' : 'hidden'}`;
+
+    if (!isMobile) {
+      return (
+        <div className="loading">
+          不支持PC端浏览，请在手机端打开该页面
+        </div>
+      );
+    }
+    else {
+      return (
+        <div>
+          <div className={loadingClass}>
+            Loading...
+          </div>
+          <div className={dialogCls}>
+            <DialogMain setContentLoaded={this.setLoaded} isLoaded={isLoaded}/>
+          </div>
+        </div>
+      )
+    }
+  }
+
+  render() {
+    const content = this.getContent();
     return (
       <div className="App">
-        {!isMobile && (
-          <div
-            style={{
-              width: '100%',
-              height: '100vh',
-              lineHeight: '100vh',
-              textAlign: 'center',
-            }}
-          >
-            不支持PC端浏览，请在手机端打开该页面
-          </div>
-        )}
-        {isMobile && (
-          <React.Suspense fallback={(
-            <div className="loading">
-              Loading...
-            </div>
-          )}>
-            <DialogMain />
-          </React.Suspense>
-        )}
+        {content}
       </div>
     );
   }
