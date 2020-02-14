@@ -132,6 +132,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
   private inputLock: boolean = false;
   // 保存用户选择的标签
   private selectTags: { [key: string]: boolean } = {};
+  private selectType: string = '';
 
   // iOS端：记录focus时的 scrollTop 值
   private tempScrollTop: number | undefined;
@@ -179,7 +180,12 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
 
     document.body.addEventListener('blur', this.handleInputBlur, true);
 
-
+    // 阻止滚动时安卓浏览器发生的 resize 事件，避免导航栏工具栏消失
+    window.addEventListener("resize", function(e) {
+      console.log('resize');
+      console.log(window.innerHeight);
+      e.preventDefault();
+    }, { capture: true, passive: true });
 
     window.onload = () => {
       console.log('load');
@@ -194,7 +200,22 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     setTimeout(() => {
       const nodes = document.getElementsByClassName('letter-wrapper');
       if (nodes && nodes.length > 0) {
-        (nodes[0] as HTMLElement).style.height = `${window.innerWidth * 1.666}px`;
+        let h = window.innerWidth * 1.71;
+        if (h > window.innerHeight) {
+          (nodes[0] as HTMLElement).style.height = `${window.innerHeight}px`;
+
+          const imgW = window.innerHeight * (1269 / 2170);
+          
+          const tagContainer = document.querySelector('.tag-container') as HTMLElement;
+          if (tagContainer) {
+            tagContainer.style.width = `${imgW / window.innerWidth * 82.2}%`;
+            tagContainer.style.fontSize = `${16 * (1269 / 2170)}px`;
+          }
+
+
+        } else {
+          (nodes[0] as HTMLElement).style.height = `${h}px`;
+        }
       }
     }, 100);
 
@@ -364,18 +385,33 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     }
   }
 
-  handleClickTag = (e: any) => {
-    const type = e.target.getAttribute('data-type');
+  handleClickTag = (e: string) => {
+    // const type = e.target.getAttribute('data-type');
+    const type = e;
     if (!type) return;
+    
+    // 原本已选中一个tag, 先移除该选中态
+    if (this.selectType && this.selectType !== type) {
+      const nodes = document.getElementsByClassName(`item-${this.selectType}`);
+      for(let i = 0; i < nodes.length; i++) {
+        const list = nodes[i].classList;
+        if (list.contains('active')) {
+          nodes[i].classList.remove('active');
+        }
+      }
+    }
+
     const nodes = document.getElementsByClassName(`item-${type}`);
     for(let i = 0; i < nodes.length; i++) {
       const list = nodes[i].classList;
       if (list.contains('active')) {
         nodes[i].classList.remove('active');
-        this.selectTags[`item-${type}`] = true;
+        // this.selectTags[`item-${type}`] = false;
+        this.selectType = '';
       } else {
         nodes[i].classList.add('active');
-        this.selectTags[`item-${type}`] = false;
+        // this.selectTags[`item-${type}`] = true;
+        this.selectType = type;
       }
     }
   }
@@ -499,24 +535,50 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
                 />
               </div>
               {sectionId === 7 && (
-                <Slider speed={20}>
-                  <div className="tag-row">
-                    <div className="tag-item item-a" onClick={this.handleClickTag} data-type="a" >爱拼才会赢</div>
-                    <div className="tag-item item-b" onClick={this.handleClickTag} data-type="b">未来不是梦</div>
-                    <div className="tag-item item-c" onClick={this.handleClickTag} data-type="c">我真的很不错</div>
-                    <div className="tag-item item-d" onClick={this.handleClickTag} data-type="d">壮志在我胸</div>
-                  </div>
-                  <div className="tag-row margin-row">
-                    <div className="tag-item item-e" onClick={this.handleClickTag} data-type="e">哈哈哈哈</div>
-                    <div className="tag-item item-f" onClick={this.handleClickTag} data-type="f">好嗨哟</div>
-                    <div className="tag-item item-g" onClick={this.handleClickTag} data-type="g">小幸运</div>
-                    <div className="tag-item item-h" onClick={this.handleClickTag} data-type="h">C位出道</div>
-                  </div>
-                  <div className="tag-row">
-                    <div className="tag-item item-i" onClick={this.handleClickTag} data-type="i">佛系少年</div>
-                    <div className="tag-item item-j" onClick={this.handleClickTag} data-type="j">葛优瘫</div>
-                    <div className="tag-item item-k" onClick={this.handleClickTag} data-type="k">断舍离</div>
-                    <div className="tag-item item-l" onClick={this.handleClickTag} data-type="l">神马都是浮云</div>
+                <Slider speed={40}>
+                  <div className="slide-content">
+                    <div className="tag-row">
+                      <div className="tag-item item-a" onClick={() => { this.handleClickTag('a'); }}>
+                        <span>爱拼才会赢</span>
+                      </div>
+                      <div className="tag-item item-b" onClick={() => { this.handleClickTag('b'); }}>
+                        <span>未来不是梦</span>
+                      </div>
+                      <div className="tag-item item-c" onClick={() => { this.handleClickTag('c'); }}>
+                        <span>我真的很不错</span>
+                      </div>
+                      <div className="tag-item item-d" onClick={() => { this.handleClickTag('d'); }}>
+                        <span>壮志在我胸</span>
+                      </div>
+                    </div>
+                    <div className="tag-row margin-row">
+                      <div className="tag-item item-e" onClick={() => { this.handleClickTag('e'); }}>
+                        <span>哈哈哈哈</span>
+                      </div>
+                      <div className="tag-item item-f" onClick={() => { this.handleClickTag('f'); }}>
+                        <span>好嗨哟</span>
+                      </div>
+                      <div className="tag-item item-g" onClick={() => { this.handleClickTag('g'); }}>
+                        <span>小幸运</span>
+                      </div>
+                      <div className="tag-item item-h" onClick={() => { this.handleClickTag('h'); }}>
+                        <span>C位出道</span>
+                      </div>
+                    </div>
+                    <div className="tag-row">
+                      <div className="tag-item item-i" onClick={() => { this.handleClickTag('i'); }}>
+                        <span>佛系少年</span>
+                      </div>
+                      <div className="tag-item item-j" onClick={() => { this.handleClickTag('j'); }}>
+                        <span>葛优瘫</span>
+                      </div>
+                      <div className="tag-item item-k" onClick={() => { this.handleClickTag('k'); }}>
+                        <span>断舍离</span>
+                      </div>
+                      <div className="tag-item item-l" onClick={() => { this.handleClickTag('l'); }}>
+                        <span>神马都是浮云</span>
+                      </div>
+                    </div>
                   </div>
                 </Slider>
               )}

@@ -85,7 +85,8 @@ export class Slider extends Component<ISliderProps, ISliderState> {
     if (contentRef && copyRef && wrapper) {
       // setTimeout 确保dom已经渲染完成
       setTimeout(() => {
-        wrapper.style.height = contentRef.offsetHeight + 'px';
+        // wrapper.style.height = contentRef.offsetHeight + 'px';
+        wrapper.style.height = '100%';
         // console.log(contentRef.offsetWidth);
         // console.log(contentRef.scrollWidth);
         wrapper.style.width = contentRef.scrollWidth + 'px';
@@ -143,6 +144,7 @@ export class Slider extends Component<ISliderProps, ISliderState> {
         onTouchEnd={this.onDragEnd}
         style={{
           overflow: 'hidden',
+          height: '74%',
         }}
       >
         <div ref={this.setWrapperRef} className="slider-wrapper">

@@ -113,15 +113,13 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['rl-circle', 'infinite'],
       addAfterAnimation: [],
       removeBeforeAnimation: [],
-      children: [
-        {
-          selector: '.intro5',
-          aniCls: ['fadeIn'],
-          addAfterAnimation: ['opacity1'],
-          removeBeforeAnimation: ['opacity0'] 
-        },
-      ]
-    }
+    },
+    {
+      selector: '.intro5',
+      aniCls: ['fadeIn'],
+      addAfterAnimation: ['opacity1'],
+      removeBeforeAnimation: ['opacity0'] 
+    },
   ],
   // scene 5
   [
