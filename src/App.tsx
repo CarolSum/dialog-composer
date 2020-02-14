@@ -2,6 +2,8 @@ import React from 'react';
 import './App.css';
 import { stopWheel } from './utils';
 import DialogMain from './components/dialog/dialog';
+import LoadingGif from './assets/loading.gif';
+
 interface IAppState {
   isMobile?: boolean;
   isLoaded: boolean;
@@ -66,7 +68,7 @@ class App extends React.Component<{}, IAppState> {
       return (
         <div>
           <div className={loadingClass}>
-            Loading...
+            <img src={LoadingGif} alt="loading gif"/>
           </div>
           <div className={dialogCls}>
             <DialogMain setContentLoaded={this.setLoaded} isLoaded={isLoaded}/>
