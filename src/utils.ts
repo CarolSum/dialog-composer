@@ -117,3 +117,44 @@ export function measureLeft(left: number, top: number): IPos {
     }
   }
 }
+
+export class AudioController {
+
+  private static playingNode: HTMLMediaElement | null = null;
+
+  public static mutePlay(id: string) {
+    const node = document.querySelector(id) as HTMLMediaElement;
+    if (!node) return;
+    node.muted = true;
+    node.play().then(() => {
+      console.log(`mute play ${id} success`);
+    }).catch(e => {
+      console.log(id);
+    });
+  }
+
+  public static play(id: string, forceReplace?: boolean) {
+    if (forceReplace && this.playingNode) {
+      this.playingNode.pause();
+      this.playingNode.currentTime = 0;
+      this.playingNode = null;
+    }
+    const node = document.querySelector(id) as HTMLMediaElement;
+    if (!node) return Promise.resolve();
+    this.playingNode = node;
+    node.pause();
+    node.currentTime = 0;
+    node.muted = false;
+    node.play().then(() => {
+      console.log(`play ${id} success`);
+    }).catch(e => {
+      console.log(e);  
+    }).finally(() => {
+      return Promise.resolve();
+    })
+  }
+
+  public static async syncPlay(id: string) {
+    await this.play(id);
+  }
+}

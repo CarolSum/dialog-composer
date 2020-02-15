@@ -1,3 +1,5 @@
+import { AudioController } from "./utils"
+
 // 动画帧 interface
 export interface IAniFrame {
   selector: string;
@@ -5,10 +7,20 @@ export interface IAniFrame {
   addAfterAnimation: string[];
   removeBeforeAnimation: string[];
   children?: IAniFrame[];
+  callbefore?: () => void;
+  callback?: () => void;
 }
 
 // 定义每个场景中的动画组
 export const animationGroup: IAniFrame[][] = [
+  [
+    {
+      selector: '.el-indicator',
+      aniCls: ['flash', 'infinite'],
+      addAfterAnimation: [],
+      removeBeforeAnimation: [],
+    }
+  ],
   // scene 0
   [
     {
@@ -16,6 +28,9 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['lr-circle', 'infinite'],
       addAfterAnimation: [],
       removeBeforeAnimation: [],
+      callbefore: function () {
+        AudioController.play('#music1');
+      }
     },
     {
       selector: '.intro1',
@@ -31,6 +46,9 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['fadeIn'],
       addAfterAnimation: ['opacity1'],  // 动画结束后添加的样式类，用于覆盖原来的样式
       removeBeforeAnimation: [],  // 动画开始前添加的样式类
+      callbefore: () => {
+        AudioController.play('#music2_1');
+      },
       // 子动画组
       children: [
         {
@@ -38,6 +56,9 @@ export const animationGroup: IAniFrame[][] = [
           removeBeforeAnimation: ['opacity0'],
           aniCls: ['slideInUp'],
           addAfterAnimation: ['opacity1'],  // 动画结束后添加的样式类，用于覆盖原来的样式
+          callback: () => {
+            AudioController.play('#music2_2');
+          },
           children: [
             {
               selector: '.intro2',
@@ -56,7 +77,10 @@ export const animationGroup: IAniFrame[][] = [
       selector: '.el-subway2',
       aniCls: ['slideInLeft'],
       addAfterAnimation: ['opacity1'],
-      removeBeforeAnimation: ['opacity0']
+      removeBeforeAnimation: ['opacity0'],
+      callbefore: () => {
+        AudioController.play('#music3');
+      },
     },
     {
       selector: '.el-bus',
@@ -88,6 +112,9 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['takeaway-arrive'],
       addAfterAnimation: ['opacity1'],
       removeBeforeAnimation: ['opacity0'],
+      callback: () => {
+        AudioController.play('#music4');
+      },
       children: [
         {
           selector: '.el-takeaway-text',
@@ -113,6 +140,9 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['rl-circle', 'infinite'],
       addAfterAnimation: [],
       removeBeforeAnimation: [],
+      callbefore: () => {
+        AudioController.play('#music1');
+      }
     },
     {
       selector: '.intro5',
@@ -128,6 +158,9 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['slideInUp'],
       removeBeforeAnimation: ['opacity0'],
       addAfterAnimation: ['opacity1'],
+      callback: () => {
+        AudioController.play('#music6');
+      },
       children: [
         {
           selector: '.intro6',
@@ -145,6 +178,9 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['slideInCenterUp'],
       removeBeforeAnimation: ['opacity0'],
       addAfterAnimation: ['opacity1'],
+      callback: () => {
+        AudioController.play('#music7');
+      },
       children: [
         {
           selector: '.intro7',
@@ -162,6 +198,9 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['rotateUp'],
       removeBeforeAnimation: ['opacity0'],
       addAfterAnimation: ['opacity1'],
+      callbefore: () => {
+        AudioController.play('#music8');
+      },
       children: [
         {
           selector: '.el-confirm',

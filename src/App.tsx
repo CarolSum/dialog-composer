@@ -4,6 +4,15 @@ import { stopWheel } from './utils';
 import DialogMain from './components/dialog/dialog';
 import LoadingGif from './assets/loading.gif';
 
+import Music1 from './assets/music/music1.wav';
+import Music2_1 from './assets/music/music2-1.mp3';
+import Music2_2 from './assets/music/music2-2.mp3';
+import Music3 from './assets/music/music3.wav';
+import Music4 from './assets/music/music4.wav';
+import Music6 from './assets/music/music6.wav';
+import Music7 from './assets/music/music7.mp3';
+import Music8 from './assets/music/music8.mp3';
+
 interface IAppState {
   isMobile?: boolean;
   isLoaded: boolean;
@@ -73,6 +82,14 @@ class App extends React.Component<{}, IAppState> {
           <div className={dialogCls}>
             <DialogMain setContentLoaded={this.setLoaded} isLoaded={isLoaded}/>
           </div>
+          <audio src={Music1} id="music1" preload="auto"></audio>
+          <audio src={Music2_1} id="music2_1" preload="auto"></audio>
+          <audio src={Music2_2} id="music2_2" preload="auto"></audio>
+          <audio src={Music3} id="music3" preload="auto"></audio>
+          <audio src={Music4} id="music4" preload="auto"></audio>
+          <audio src={Music6} id="music6" preload="auto"></audio>
+          <audio src={Music7} id="music7" preload="auto"></audio>
+          <audio src={Music8} id="music8" preload="auto"></audio>
         </div>
       )
     }

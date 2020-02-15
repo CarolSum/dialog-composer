@@ -4,6 +4,7 @@ import CoffeeText from '../../assets/coffee.png';
 import ScanQRcode from '../../assets/scan.png';
 import Subway from '../../assets/subway.png';
 
+import Indicator from '../../assets/indicator.png';
 // import BgMobile from '../../assets/bg-mobile.png';
 import Scene2Subway from '../../assets/subway-scene2.png';
 import Scene2Bus from '../../assets/bus-scene2.png';
@@ -18,7 +19,7 @@ import Scene5Hand from '../../assets/hand-scene5.png';
 // scene 6
 import Scene6Hand from '../../assets/hand-scene6.png';
 
-import { cubicBezier, animateCSS, measureLeft, setElementStyle } from '../../utils';
+import { cubicBezier, animateCSS, measureLeft, setElementStyle, AudioController } from '../../utils';
 import { Slider } from '../slider/slide';
 
 import './dialog.css';
@@ -40,6 +41,12 @@ let tempClsMap: { [key: string] : ITempCls } = {};
 async function animate(config: IAniFrame) {
   const target = document.querySelector(config.selector);
   if (!target) return;
+
+  // 执行前调函数
+  if (config.callbefore) {
+    config.callbefore();
+  }
+
   // 动画前预处理
   if (config.removeBeforeAnimation) {
     target.classList.remove(...config.removeBeforeAnimation);
@@ -90,6 +97,11 @@ async function animate(config: IAniFrame) {
       }
     }
 
+    // 执行动画帧回调
+    if (config.callback) {
+      config.callback();
+    }
+
     // 如果存在子动画
     if (config.children) {
       config.children.forEach((subCfg) => {
@@ -122,11 +134,16 @@ interface IDialogProps {
   isLoaded: boolean;
 }
 
+let inital = true;
+
 export default class DialogMain extends Component<IDialogProps, IDialogState> {
 
   // private sectionId: number = 0;
   private originX: number | null = 0;
   private originY: number | null = 0;
+
+  // 记录滚动的方向
+  private gestureFlag: 1 | -1 | 0 = 0;
 
   // 歌曲名输入框的标志位, 用于处理中文输入法在部分设备的拼音字符问题
   private inputLock: boolean = false;
@@ -155,9 +172,23 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     }
   }
 
-  clearPoint = () => {
+  clearPoint = (e?: TouchEvent) => {
     this.originX = null;
     this.originY = null;
+    this.gestureFlag = 0;
+    // 用于处理 iOS 下第一次播放音频文件必须由用户交互触发的问题
+    // https://stackoverflow.com/questions/44595093/which-events-are-acceptable-for-starting-html5-audio-play-in-mobile-chrome
+    // https://aaron-bird.github.io/2019/03/03/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AF%B9audio%E6%A0%87%E7%AD%BE%E7%9A%84%E9%99%90%E5%88%B6%E6%80%BB%E7%BB%93/
+    e && console.log('end');
+    if (e && inital) {
+      e && AudioController.mutePlay(`#music1`);
+      e && AudioController.mutePlay(`#music2_2`);
+      e && AudioController.mutePlay(`#music2_1`);
+      for (let i = 3; i < 9; i++) {
+        e && AudioController.mutePlay(`#music${i}`);
+      }
+      inital = false;
+    }
   }
 
   getSectionList() {
@@ -193,6 +224,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       // 将状态置为 loaded 之后父组件会把loading页none掉, 保证在none掉之后才复位scrollTop;
       setTimeout(() => {
         document.scrollingElement!.scrollTop = 0;
+        this.transition();
       }, 0);
     }
 
@@ -235,9 +267,6 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       left: `${sc3Bus.left * 100}%`,
       top: `${sc3Bus.top * 100}%`,
     }); 
-
-
-    this.transition();
   }
 
   componentWillUnmount() {
@@ -287,6 +316,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       const deltaY = Math.abs(point.screenY - this.originY);
       if (deltaY > delta) {
         // true: 向上; false: 向下;
+        // this.gestureFlag = this.originY > point.screenY ? 1 : -1;
         const flag = this.originY > point.screenY;
         this.switchScene(flag);
         this.clearPoint();
@@ -294,11 +324,31 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     }
   }
 
+  handleTouchEnd = (e: TouchEvent) => {
+    e && console.log('end');
+    if (e && inital) {
+      e && AudioController.mutePlay(`#music1`);
+      e && AudioController.mutePlay(`#music2_2`);
+      e && AudioController.mutePlay(`#music2_1`);
+      for (let i = 3; i < 9; i++) {
+        e && AudioController.mutePlay(`#music${i}`);
+      }
+      inital = false;
+    }
+
+    if (this.gestureFlag !== 0) {
+      this.switchScene(this.gestureFlag > 0);
+      this.clearPoint();
+    }
+
+    this.gestureFlag = 0;
+  }
+
   async switchScene(dir: boolean) {
     const { sectionId } = this.state;
     if (dir) {
       console.log('sid: ', sectionId);
-      if (sectionId >= 8) return;
+      if (sectionId >= 9) return;
       H = this.getSectionList()[sectionId].getBoundingClientRect().height;
       // 差值更新 document.scrollintElement.scrollTop
       await this.interpolate(1);
@@ -368,7 +418,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
 
   transition() {
     const { sectionId } = this.state;
-    if (sectionId < 0 || sectionId > 8) return;
+    if (sectionId < 0 || sectionId > 9) return;
     const frames = animationGroup[sectionId];
     if (!frames) return;
     frames.forEach((frame) => {
@@ -445,6 +495,9 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
 
     return (
       <div className="dialog-main">
+        <div className="section scene-home">
+          <img src={Indicator} alt="indicator" className="el-indicator"/>
+        </div>
         <div className="section scene0">
           <div className="subway-container">
             <img src={Subway} alt="subway" className="el-subway"/>
@@ -534,7 +587,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
                   // onFocus={}
                 />
               </div>
-              {sectionId === 7 && (
+              {sectionId === 8 && (
                 <Slider speed={40}>
                   <div className="slide-content">
                     <div className="tag-row">

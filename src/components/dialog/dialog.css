@@ -34,6 +34,19 @@
   padding-right: 1rem;
 }
 
+.scene-home {
+  background: center / cover no-repeat url('../../assets/bg-0.jpeg');
+}
+
+.el-indicator {
+  position: absolute;
+  bottom: 1rem;
+  width: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-duration: 2s;
+}
+
 .scene0 {
   background: center / cover no-repeat url('../../assets/bg-morning.jpeg');
 }
