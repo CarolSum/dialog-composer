@@ -18,8 +18,12 @@ import Scene4Subway from '../../assets/subway-scene4.png';
 import Scene5Hand from '../../assets/hand-scene5.png';
 // scene 6
 import Scene6Hand from '../../assets/hand-scene6.png';
+// scene8
+import SaveBtn from '../../assets/save-img.png';
+import RewriteImg from '../../assets/rewrite.png';
+import ReviewImg from '../../assets/review.png';
 
-import { cubicBezier, animateCSS, measureLeft, setElementStyle, AudioController } from '../../utils';
+import { cubicBezier, animateCSS, measureLeft, setElementStyle, AudioController, measureHeight } from '../../utils';
 import { Slider } from '../slider/slide';
 
 import './dialog.css';
@@ -258,7 +262,27 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     setElementStyle('.el-bus', {
       left: `${sc3Bus.left * 100}%`,
       top: `${sc3Bus.top * 100}%`,
-    }); 
+    });
+    const sc8Title = measureLeft(0.223, 0.203);
+    setElementStyle('.d-title', {
+      top: `${sc8Title.top * 100}%`,
+    });
+    const sc8LyricsContainer = measureLeft(0, 0.289);
+    setElementStyle('.iyrics-container', {
+      top: `${sc8LyricsContainer.top * 100}%`,
+    });
+    const maxH = measureHeight(0.43);
+    setElementStyle('.iyrics-container', {
+      maxHeight: `${maxH * 100}%`,
+    });
+    const sc8Save = measureLeft(0, 0.8125);
+    setElementStyle('.d-save-btn', {
+      top: `${sc8Save.top * 100}%`,
+    });
+    const sc8Btns = measureLeft(0, 0.734);
+    setElementStyle('.d-func-btns', {
+      top: `${sc8Btns.top * 100}%`,
+    });
   }
 
   componentWillUnmount() {
@@ -487,6 +511,18 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     }
   }
 
+  rewrite = () => {
+    console.log('rewrite');
+  }
+
+  review = () => {
+    console.log('review');
+  }
+
+  savePicture = () => {
+    console.log('save pic');
+  }
+
   render() {
     const { sectionId, isInitial } = this.state;
 
@@ -644,7 +680,24 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
           </div>
         </div>
         <div className="section scene8">
-          <div className="iyrics-container"></div>
+          <div className="d-title">用户定制的歌曲名</div>
+          <div className="iyrics-container">
+            <div>这是歌词 ······</div>
+            <div>这是歌词 ······</div>
+            <div>这是歌词 ······</div>
+            <div>这是歌词 ······</div>
+            <div>这是歌词 ······</div>
+            <div>这是歌词 ······</div>
+            <div>这是歌词 ······</div>
+            <div>这是歌词 ······</div>
+          </div>
+          <div className="d-func-btns">
+            <img src={RewriteImg} alt="rewrite" onClick={this.rewrite}/>
+            <img src={ReviewImg} alt="review" style={{ marginLeft: '12px' }} onClick={this.review}/>
+          </div>
+          <div className="d-save-btn">
+            <img src={SaveBtn} alt="save" onClick={this.savePicture}/>
+          </div>
         </div>
       </div>
     );

@@ -51,7 +51,7 @@
 .el-indicator {
   position: absolute;
   bottom: 1rem;
-  width: 10%;
+  width: 20%;
   left: 50%;
   transform: translateX(-50%);
   animation-duration: 2s;
@@ -332,12 +332,35 @@ div.textarea:before {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'shitisemi';
+}
+
+.d-title {
+  position: absolute;
+  font-size: 2rem;
+  top: 20%;
 }
 
 .iyrics-container {
-  width: 95%;
-  height: 90%;
-  background: center / contain no-repeat url('../../assets/bg-lyrics.png');
+  position: absolute;
+}
+
+.d-save-btn {
+  position: absolute;
+  left: 0;
+}
+
+.d-save-btn img {
+  width: 33%;
+}
+
+.d-func-btns {
+  position: absolute;
+  left: 0;
+}
+
+.d-func-btns img {
+  width: 38%;
 }
 
 .slide-content {

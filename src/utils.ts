@@ -118,6 +118,20 @@ export function measureLeft(left: number, top: number): IPos {
   }
 }
 
+export function measureHeight(height: number): number {
+  const { innerHeight, innerWidth } = window;
+
+  if ((Oh / Ow ) > (innerHeight / innerWidth)) {
+    // 高撑满，宽不足
+    // 背景图在窗口内的大小
+    const th = innerHeight;
+    const tw = th * Ow / Oh;
+    return height * (innerWidth / tw);
+  } else {
+    return height;
+  }
+}
+
 export class AudioController {
 
   private static playingNode: HTMLMediaElement | null = null;
