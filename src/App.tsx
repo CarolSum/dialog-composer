@@ -4,6 +4,7 @@ import { stopWheel } from './utils';
 import DialogMain from './components/dialog/dialog';
 import LoadingGif from './assets/loading.gif';
 
+import MusicBg from './assets/music/bg-music.mp3';
 import Music1 from './assets/music/music1.wav';
 import Music2_1 from './assets/music/music2-1.mp3';
 import Music2_2 from './assets/music/music2-2.mp3';
@@ -82,6 +83,7 @@ class App extends React.Component<{}, IAppState> {
           <div className={dialogCls}>
             <DialogMain setContentLoaded={this.setLoaded} isLoaded={isLoaded}/>
           </div>
+          <audio src={MusicBg} id="music_bg" preload="auto" loop={true}></audio>
           <audio src={Music1} id="music1" preload="auto"></audio>
           <audio src={Music2_1} id="music2_1" preload="auto"></audio>
           <audio src={Music2_2} id="music2_2" preload="auto"></audio>

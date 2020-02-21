@@ -34,8 +34,18 @@
   padding-right: 1rem;
 }
 
-.scene-home {
-  background: center / cover no-repeat url('../../assets/bg-0.jpeg');
+.scene-home-before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: center / cover no-repeat url('../../assets/bg-0-before.jpeg');
+}
+
+.scene-home-after {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: center / cover no-repeat url('../../assets/bg-0-after.jpeg');
 }
 
 .el-indicator {
@@ -45,6 +55,7 @@
   left: 50%;
   transform: translateX(-50%);
   animation-duration: 2s;
+  z-index: 1;
 }
 
 .scene0 {

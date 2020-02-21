@@ -24,6 +24,7 @@ import { Slider } from '../slider/slide';
 
 import './dialog.css';
 
+
 interface ITempCls {
   added: string[];
   removed: string[];
@@ -127,14 +128,13 @@ function cleanUpScene() {
 
 interface IDialogState {
   sectionId: number;
+  isInitial: boolean;
 }
 
 interface IDialogProps {
   setContentLoaded: () => void;
   isLoaded: boolean;
 }
-
-let inital = true;
 
 export default class DialogMain extends Component<IDialogProps, IDialogState> {
 
@@ -161,10 +161,12 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     
     this.state = {
       sectionId: 0,
+      isInitial: true,
     };
   }
 
   setOriginPoint = (e: TouchEvent) => {
+    if (this.state.isInitial) return;
     if (e.touches.length) {
       const touchPoint = e.touches[0];
       this.originX = touchPoint.screenX;
@@ -179,16 +181,6 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     // 用于处理 iOS 下第一次播放音频文件必须由用户交互触发的问题
     // https://stackoverflow.com/questions/44595093/which-events-are-acceptable-for-starting-html5-audio-play-in-mobile-chrome
     // https://aaron-bird.github.io/2019/03/03/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AF%B9audio%E6%A0%87%E7%AD%BE%E7%9A%84%E9%99%90%E5%88%B6%E6%80%BB%E7%BB%93/
-    e && console.log('end');
-    if (e && inital) {
-      e && AudioController.mutePlay(`#music1`);
-      e && AudioController.mutePlay(`#music2_2`);
-      e && AudioController.mutePlay(`#music2_1`);
-      for (let i = 3; i < 9; i++) {
-        e && AudioController.mutePlay(`#music${i}`);
-      }
-      inital = false;
-    }
   }
 
   getSectionList() {
@@ -305,6 +297,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
 
   handleMouseMove = (e: TouchEvent) => {
     if (!this.props.isLoaded) return;
+    if (this.state.isInitial) return;
 
     e.preventDefault();
 
@@ -325,17 +318,6 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
   }
 
   handleTouchEnd = (e: TouchEvent) => {
-    e && console.log('end');
-    if (e && inital) {
-      e && AudioController.mutePlay(`#music1`);
-      e && AudioController.mutePlay(`#music2_2`);
-      e && AudioController.mutePlay(`#music2_1`);
-      for (let i = 3; i < 9; i++) {
-        e && AudioController.mutePlay(`#music${i}`);
-      }
-      inital = false;
-    }
-
     if (this.gestureFlag !== 0) {
       this.switchScene(this.gestureFlag > 0);
       this.clearPoint();
@@ -490,13 +472,32 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     return false;
   }
 
-  render() {
-    const { sectionId } = this.state;
+  initialize = () => {
+    if (this.state.isInitial) {
+      AudioController.play('#music_bg');
+      AudioController.mutePlay(`#music1`);
+      AudioController.mutePlay(`#music2_2`);
+      AudioController.mutePlay(`#music2_1`);
+      for (let i = 3; i < 9; i++) {
+        AudioController.mutePlay(`#music${i}`);
+      }
+      this.setState({
+        isInitial: false,
+      });
+    }
+  }
 
+  render() {
+    const { sectionId, isInitial } = this.state;
+
+    const cls = isInitial ? 'opacity0' : 'opacity1';
     return (
       <div className="dialog-main">
-        <div className="section scene-home">
-          <img src={Indicator} alt="indicator" className="el-indicator"/>
+        <div className="section" onTouchEnd={this.initialize}>
+          <div className={`scene-home-before ${isInitial ? 'opacity1' : 'opacity0'}`}></div>
+          <div className={`scene-home-after ${cls}`}>
+            <img src={Indicator} alt="indicator" className={`el-indicator`}/>
+          </div>
         </div>
         <div className="section scene0">
           <div className="subway-container">
