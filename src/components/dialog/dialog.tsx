@@ -133,6 +133,7 @@ function cleanUpScene() {
 interface IDialogState {
   sectionId: number;
   isInitial: boolean;
+  Scene8Actived: boolean;
 }
 
 interface IDialogProps {
@@ -166,6 +167,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     this.state = {
       sectionId: 0,
       isInitial: true,
+      Scene8Actived: false,
     };
   }
 
@@ -263,26 +265,6 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       left: `${sc3Bus.left * 100}%`,
       top: `${sc3Bus.top * 100}%`,
     });
-    const sc8Title = measureLeft(0.223, 0.203);
-    setElementStyle('.d-title', {
-      top: `${sc8Title.top * 100}%`,
-    });
-    const sc8LyricsContainer = measureLeft(0, 0.289);
-    setElementStyle('.iyrics-container', {
-      top: `${sc8LyricsContainer.top * 100}%`,
-    });
-    const maxH = measureHeight(0.43);
-    setElementStyle('.iyrics-container', {
-      maxHeight: `${maxH * 100}%`,
-    });
-    const sc8Save = measureLeft(0, 0.8125);
-    setElementStyle('.d-save-btn', {
-      top: `${sc8Save.top * 100}%`,
-    });
-    const sc8Btns = measureLeft(0, 0.734);
-    setElementStyle('.d-func-btns', {
-      top: `${sc8Btns.top * 100}%`,
-    });
   }
 
   componentWillUnmount() {
@@ -351,10 +333,10 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
   }
 
   async switchScene(dir: boolean) {
-    const { sectionId } = this.state;
+    const { sectionId, Scene8Actived } = this.state;
     if (dir) {
       console.log('sid: ', sectionId);
-      if (sectionId >= 9) return;
+      if (sectionId >= 9 || (sectionId === 8 && !Scene8Actived)) return;
       H = this.getSectionList()[sectionId].getBoundingClientRect().height;
       // 差值更新 document.scrollintElement.scrollTop
       await this.interpolate(1);
@@ -433,12 +415,48 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
   }
 
   touchConfirm = (flag: boolean) => {
+    const { Scene8Actived } = this.state;
     const node = document.querySelector('.el-confirm');
     if (flag) {
       node?.classList.add('touch');
     } else {
       node?.classList.remove('touch');
+      if (!Scene8Actived) {
+        this.setState({
+          Scene8Actived: true,
+        });
+
+        setTimeout(() => {
+          this.setupScene8();
+          this.switchScene(true);
+        }, 0);
+      } else {
+        this.switchScene(true);
+      }
     }
+  }
+
+  setupScene8 = () => {
+    const sc8Title = measureLeft(0.223, 0.203);
+    setElementStyle('.d-title', {
+      top: `${sc8Title.top * 100}%`,
+    });
+    const sc8LyricsContainer = measureLeft(0, 0.289);
+    setElementStyle('.iyrics-container', {
+      top: `${sc8LyricsContainer.top * 100}%`,
+    });
+    const maxH = measureHeight(0.43);
+    setElementStyle('.iyrics-container', {
+      maxHeight: `${maxH * 100}%`,
+    });
+    const sc8Save = measureLeft(0, 0.8125);
+    setElementStyle('.d-save-btn', {
+      top: `${sc8Save.top * 100}%`,
+    });
+    const sc8Btns = measureLeft(0, 0.734);
+    setElementStyle('.d-func-btns', {
+      top: `${sc8Btns.top * 100}%`,
+    });
   }
 
   handleClickTag = (e: string) => {
@@ -512,11 +530,17 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
   }
 
   rewrite = () => {
-    console.log('rewrite');
+    this.switchScene(false);
   }
 
   review = () => {
-    console.log('review');
+    // 返回第一个场景
+    this.setState({
+      isInitial: true,
+      sectionId: 0,
+    });
+    const node = document.querySelector('.section');
+    node?.scrollIntoView(true);
   }
 
   savePicture = () => {
@@ -524,7 +548,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
   }
 
   render() {
-    const { sectionId, isInitial } = this.state;
+    const { sectionId, isInitial, Scene8Actived } = this.state;
 
     const cls = isInitial ? 'opacity0' : 'opacity1';
     return (
@@ -679,26 +703,28 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
             onTouchEnd={() => { this.touchConfirm(false); }}>
           </div>
         </div>
-        <div className="section scene8">
-          <div className="d-title">用户定制的歌曲名</div>
-          <div className="iyrics-container">
-            <div>这是歌词 ······</div>
-            <div>这是歌词 ······</div>
-            <div>这是歌词 ······</div>
-            <div>这是歌词 ······</div>
-            <div>这是歌词 ······</div>
-            <div>这是歌词 ······</div>
-            <div>这是歌词 ······</div>
-            <div>这是歌词 ······</div>
+        {Scene8Actived && (
+          <div className="section scene8">
+            <div className="d-title">用户定制的歌曲名</div>
+            <div className="iyrics-container">
+              <div>这是歌词 ······</div>
+              <div>这是歌词 ······</div>
+              <div>这是歌词 ······</div>
+              <div>这是歌词 ······</div>
+              <div>这是歌词 ······</div>
+              <div>这是歌词 ······</div>
+              <div>这是歌词 ······</div>
+              <div>这是歌词 ······</div>
+            </div>
+            <div className="d-func-btns">
+              <img src={RewriteImg} alt="rewrite" onClick={this.rewrite}/>
+              <img src={ReviewImg} alt="review" style={{ marginLeft: '12px' }} onClick={this.review}/>
+            </div>
+            <div className="d-save-btn">
+              <img src={SaveBtn} alt="save" onClick={this.savePicture}/>
+            </div>
           </div>
-          <div className="d-func-btns">
-            <img src={RewriteImg} alt="rewrite" onClick={this.rewrite}/>
-            <img src={ReviewImg} alt="review" style={{ marginLeft: '12px' }} onClick={this.review}/>
-          </div>
-          <div className="d-save-btn">
-            <img src={SaveBtn} alt="save" onClick={this.savePicture}/>
-          </div>
-        </div>
+        )}
       </div>
     );
   }
