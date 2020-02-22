@@ -239,7 +239,8 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
           const tagContainer = document.querySelector('.tag-container') as HTMLElement;
           if (tagContainer) {
             tagContainer.style.width = `${imgW / window.innerWidth * 82.2}%`;
-            tagContainer.style.fontSize = `${16 * (1269 / 2170)}px`;
+            
+            tagContainer.style.fontSize = `${16 / (h / window.innerHeight)}px`;
           }
 
 
@@ -707,14 +708,15 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
           <div className="section scene8">
             <div className="d-title">用户定制的歌曲名</div>
             <div className="iyrics-container">
-              <div>这是歌词 ······</div>
-              <div>这是歌词 ······</div>
-              <div>这是歌词 ······</div>
-              <div>这是歌词 ······</div>
-              <div>这是歌词 ······</div>
-              <div>这是歌词 ······</div>
-              <div>这是歌词 ······</div>
-              <div>这是歌词 ······</div>
+              <div className="iyrics-line">这是歌词 ······</div>
+              <div className="iyrics-line">这是歌词 ······</div>
+              <div className="iyrics-line">这是歌词 ······</div>
+              <div className="iyrics-line">这是歌词 ······</div>
+              <div className="iyrics-line">这是歌词 ······</div>
+              <div className="iyrics-line">这是歌词 ······</div>
+              <div className="iyrics-line">这是歌词 ······</div>
+              <div className="iyrics-line">这是歌词 ······</div>
+              <div className="iyrics-line">这是歌词 ······</div>
             </div>
             <div className="d-func-btns">
               <img src={RewriteImg} alt="rewrite" onClick={this.rewrite}/>

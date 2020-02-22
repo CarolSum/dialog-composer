@@ -337,12 +337,17 @@ div.textarea:before {
 
 .d-title {
   position: absolute;
-  font-size: 2rem;
+  font-size: 24px;
   top: 20%;
 }
 
 .iyrics-container {
   position: absolute;
+}
+
+.iyrics-line {
+  margin: 6px 0px;
+  font-size: 22px;
 }
 
 .d-save-btn {
@@ -351,7 +356,7 @@ div.textarea:before {
 }
 
 .d-save-btn img {
-  width: 33%;
+  width: 30%;
 }
 
 .d-func-btns {
@@ -360,7 +365,7 @@ div.textarea:before {
 }
 
 .d-func-btns img {
-  width: 38%;
+  width: 30%;
 }
 
 .slide-content {
