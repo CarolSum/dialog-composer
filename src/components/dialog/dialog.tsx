@@ -303,10 +303,10 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
   }
 
   handleMouseMove = (e: TouchEvent) => {
+    e.preventDefault();
+
     if (!this.props.isLoaded) return;
     if (this.state.isInitial) return;
-
-    e.preventDefault();
 
     if (!e.touches.length) return;
     const point = e.touches[0];
