@@ -134,6 +134,22 @@ export function measureHeight(height: number): number {
 
 export class AudioController {
 
+  public static loadOne(id: string) {
+    const node = document.querySelector(id) as HTMLMediaElement;
+    if (!node) return;
+    node.load();
+  }
+
+  public static load() {
+    AudioController.loadOne('#music_bg');
+    AudioController.loadOne(`#music1`);
+    AudioController.loadOne(`#music2_2`);
+    AudioController.loadOne(`#music2_1`);
+    for (let i = 3; i < 9; i++) {
+      AudioController.loadOne(`#music${i}`);
+    }
+  }
+
   public static mutePlay(id: string) {
     const node = document.querySelector(id) as HTMLMediaElement;
     if (!node) return;
@@ -148,10 +164,7 @@ export class AudioController {
   public static play(id: string, forceReplace?: boolean) {
     const node = document.querySelector(id) as HTMLMediaElement;
     if (!node) return Promise.resolve();
-    const bgMusic = document.querySelector('#music_bg') as HTMLMediaElement;
-    if (bgMusic?.paused) {
-      bgMusic.play();
-    }
+  
     node.currentTime = 0;
     node.muted = false;
     node.play().then(() => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { stopWheel } from './utils';
+import { stopWheel, AudioController } from './utils';
 import DialogMain from './components/dialog/dialog';
 import LoadingGif from './assets/loading.gif';
 
@@ -47,6 +47,7 @@ class App extends React.Component<{}, IAppState> {
       e.preventDefault();
     }, { capture: true, passive: true });
 
+    AudioController.load();
   }
 
   componentWillUnmount() {
