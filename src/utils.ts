@@ -159,6 +159,7 @@ export class AudioController {
     const node = document.querySelector(id) as HTMLMediaElement;
     if (!node) return;
     node.load();
+    console.log(node.src);
   }
 
   public static load() {
