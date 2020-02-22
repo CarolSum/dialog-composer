@@ -118,17 +118,6 @@ export function measureLeft(left: number, top: number): IPos {
   }
 }
 
-export function isWeiXin() {
-  var ua = window.navigator.userAgent.toLowerCase();
-  console.log(ua);//mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
-  if (ua.includes('micromessenger')) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
 export function measureHeight(height: number): number {
   const { innerHeight, innerWidth } = window;
 
@@ -143,23 +132,12 @@ export function measureHeight(height: number): number {
   }
 }
 
-function nodePlay(node: HTMLMediaElement, id: string) {
-  node.play().then(() => {
-    console.log(`mute play ${id} success`);
-  }).catch(e => {
-    console.log(id);
-  }).finally(() => {
-    return Promise.resolve();
-  });
-}
-
 export class AudioController {
 
   public static loadOne(id: string) {
     const node = document.querySelector(id) as HTMLMediaElement;
     if (!node) return;
     node.load();
-    console.log(node.src);
   }
 
   public static load() {
@@ -176,23 +154,11 @@ export class AudioController {
     const node = document.querySelector(id) as HTMLMediaElement;
     if (!node) return;
     node.muted = true;
-
-    if (isWeiXin()) {
-      console.log('weixin');
-      if ((window as any).WeixinJSBridge) {
-        (window as any).WeixinJSBridge.invoke('getNetworkType', {}, function () {
-          nodePlay(node, id);
-        }, false);
-      } else {
-        document.addEventListener("WeixinJSBridgeReady", function () {
-          (window as any).WeixinJSBridge.invoke('getNetworkType', {}, function () {
-            nodePlay(node, id); 
-          });
-        }, false);
-      }
-    } else {
-      nodePlay(node, id);
-    }
+    node.play().then(() => {
+      console.log(`mute play ${id} success`);
+    }).catch(e => {
+      console.log(id);
+    });
   }
 
   public static play(id: string, forceReplace?: boolean) {
@@ -201,30 +167,13 @@ export class AudioController {
   
     node.currentTime = 0;
     node.muted = false;
-
-    if (isWeiXin()) {
-      console.log('weixin');
-      if ((window as any).WeixinJSBridge) {
-        (window as any).WeixinJSBridge.invoke('getNetworkType', {}, function () {
-          nodePlay(node, id);
-        }, false);
-      } else {
-        document.addEventListener("WeixinJSBridgeReady", function () {
-          (window as any).WeixinJSBridge.invoke('getNetworkType', {}, function () {
-            nodePlay(node, id); 
-          });
-        }, false);
-      }
-    } else {
-      nodePlay(node, id);
-    }
-    // node.play().then(() => {
-    //   console.log(`play ${id} success`);
-    // }).catch(e => {
-    //   console.log(e);  
-    // }).finally(() => {
-    //   return Promise.resolve();
-    // })
+    node.play().then(() => {
+      console.log(`play ${id} success`);
+    }).catch(e => {
+      console.log(e);  
+    }).finally(() => {
+      return Promise.resolve();
+    })
   }
 
   public static async syncPlay(id: string) {
