@@ -485,6 +485,11 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
         clearTimeout(this.saveBtnTimer);
       }
     });
+
+    // 截图生成图片的容器
+    setElementStyle('.pic-container', {
+      transform: `scale(${1 / window.devicePixelRatio})`,
+    });
   }
 
   handleClickTag = (e: string) => {
@@ -586,12 +591,32 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       //   canvas.style.cssText = "width: 1680px; height: 939px; position: fixed; top: 0px; left: 0px; opacity: 1; transform: scale(0.8); z-index: 99999999; ";
       // });
       if (isIOS()) {
-        (domtoimage as any).toSvg(node).then((data: any) => { this.convertToImg(data); })
+        const scale = window.devicePixelRatio;
+        (domtoimage as any).toSvg(node, {
+          height: node.offsetHeight * scale,
+          width: node.offsetWidth * scale,
+          style: {
+            transform: "scale(" + scale + ")",
+            transformOrigin: "top left",
+            width: node.offsetWidth + "px",
+            height: node.offsetHeight + "px",
+          }
+        }).then((data: any) => { this.convertToImg(data); })
           .catch((error: any) => {
             console.error('oops, tosvg something went wrong!', error);
           });
       } else {
-        (domtoimage as any).toPng(node).then((data: any) => { this.convertToImg(data); })
+        const scale = window.devicePixelRatio;
+        (domtoimage as any).toPng(node, {
+          height: node.offsetHeight * scale,
+          width: node.offsetWidth * scale,
+          style: {
+            transform: "scale(" + scale + ")",
+            transformOrigin: "top left",
+            width: node.offsetWidth + "px",
+            height: node.offsetHeight + "px",
+          }
+        }).then((data: any) => { this.convertToImg(data); })
           .catch((error: any) => {
             console.error('oops, topng something went wrong!', error);
           });
