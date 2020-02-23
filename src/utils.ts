@@ -10,6 +10,12 @@ export function stopWheel(e: any) {
   e.returnValue = false; /* IE7, IE8 */
 }
 
+export function isIOS() {
+  const u = navigator.userAgent;
+  const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+  return isiOS;
+}
+
 export function animateCSS(element: string, animationName: string[], callback?: any) {
   const node = document.querySelector(element);
   if (!node) return Promise.resolve(true);
@@ -179,4 +185,16 @@ export class AudioController {
   public static async syncPlay(id: string) {
     return await this.play(id);
   }
+}
+
+export function canvas2Image(canvas: HTMLCanvasElement, width: number, height: number) {
+  canvas.toDataURL('image/png');
+  // const retCanvas = document.createElement('canvas');
+  // const retCtx = retCanvas.getContext('2d');
+  // retCanvas.width = width;
+  // retCanvas.height = height;
+  // retCtx!.drawImage(canvas, 0, 0, width, height, 0, 0, width, height);
+  const img = document.createElement('img');
+  img.src = canvas.toDataURL('image/jpeg');  // 可以根据需要更改格式
+  return img;
 }

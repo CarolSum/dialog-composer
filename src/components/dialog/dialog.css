@@ -22,6 +22,14 @@
   opacity: 1;
 }
 
+.visible {
+  visibility: visible;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
 .pt-1rem {
   padding-top: 1rem;
 }
@@ -366,6 +374,23 @@ div.textarea:before {
 
 .d-func-btns img {
   width: 30%;
+}
+
+.qr-code {
+  position: absolute;
+  bottom: 30%;
+  width: 24vw;
+  height: 24vw;
+  text-align: center;
+}
+
+.qr-code img {
+  width: 100%;
+  height: 100%;
+}
+
+.pic-container {
+  position: absolute;
 }
 
 .slide-content {

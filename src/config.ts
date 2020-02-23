@@ -56,7 +56,7 @@ export const animationGroup: IAniFrame[][] = [
           removeBeforeAnimation: ['opacity0'],
           aniCls: ['slideInUp'],
           addAfterAnimation: ['opacity1'],  // 动画结束后添加的样式类，用于覆盖原来的样式
-          callback: () => {
+          callbefore: () => {
             AudioController.play('#music2_2');
           },
           children: [
@@ -78,7 +78,7 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['slideInLeft'],
       addAfterAnimation: ['opacity1'],
       removeBeforeAnimation: ['opacity0'],
-      callbefore: () => {
+      callback: () => {
         AudioController.play('#music3');
       },
     },
@@ -112,7 +112,7 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['takeaway-arrive'],
       addAfterAnimation: ['opacity1'],
       removeBeforeAnimation: ['opacity0'],
-      callback: () => {
+      callbefore: () => {
         AudioController.play('#music4');
       },
       children: [
