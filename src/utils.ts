@@ -16,6 +16,11 @@ export function isIOS() {
   return isiOS;
 }
 
+export function isWeixin() {
+  const ua = window.navigator.userAgent.toLowerCase();
+  return !!ua.match(/micromessenger/i);
+}
+
 export function animateCSS(element: string, animationName: string[], callback?: any) {
   const node = document.querySelector(element);
   if (!node) return Promise.resolve(true);
@@ -121,6 +126,22 @@ export function measureLeft(left: number, top: number): IPos {
       top,
       left,
     }
+  }
+}
+
+export function measureWidth(width: number): number {
+  const { innerHeight, innerWidth } = window;
+
+  if ((Oh / Ow ) > (innerHeight / innerWidth)) {
+    // 高撑满，宽不足  ===> 宽满，所以比例不变，直接返回
+    return width;
+  } else {
+    // 宽撑满，高不足
+    // 背景图在窗口内的大小
+    const tw = innerWidth;
+    const th = tw * (Oh / Ow);
+
+    return width * (innerHeight / th);
   }
 }
 

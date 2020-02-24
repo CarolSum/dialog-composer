@@ -8,15 +8,18 @@ import MusicBg from './assets/music/bg-music.mp3';
 import Music1 from './assets/music/music1.wav';
 import Music2_1 from './assets/music/music2-1.mp3';
 import Music2_2 from './assets/music/music2-2.mp3';
-import Music3 from './assets/music/music3-1.mp3';
+import Music3 from './assets/music/music3-2.mp3';
 import Music4 from './assets/music/music4.mp3';
 import Music6 from './assets/music/music6-1.mp3';
-import Music7 from './assets/music/music7.mp3';
+import Music7 from './assets/music/music7-1.mp3';
 import Music8 from './assets/music/music8.mp3';
+import MusicOn from './assets/music_on.svg';
+import MusicOff from './assets/music_off.svg';
 
 interface IAppState {
   isMobile?: boolean;
   isLoaded: boolean;
+  isBGMPlayed: boolean;
 }
 // const DialogMain = React.lazy(() => import('./components/dialog/dialog'));
 
@@ -30,6 +33,7 @@ class App extends React.Component<{}, IAppState> {
     this.state = {
       isMobile,
       isLoaded: false,
+      isBGMPlayed: false,
     };
   }
 
@@ -61,12 +65,36 @@ class App extends React.Component<{}, IAppState> {
       isLoaded: true,
     });
   }
+
+  setBgState = (played: boolean) => {
+    this.setState({
+      isBGMPlayed: played,
+    });
+  }
+
+  toggleBGM = () => {
+    const { isBGMPlayed } = this.state;
+    try {
+      const node = document.querySelector('#music_bg') as HTMLMediaElement;
+      if (node.paused) {
+        node.play();
+      } else {
+        node.pause();
+      }
+      this.setState({
+        isBGMPlayed: !isBGMPlayed,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   
   getContent() {
-    const { isMobile, isLoaded } = this.state;
+    const { isMobile, isLoaded, isBGMPlayed } = this.state;
 
     const loadingClass = `loading-bg loading ${isLoaded ? 'none' : ''}`;
     const dialogCls = `${isLoaded ? 'visible' : 'hidden'}`;
+    const bgmSwitcherCls = `${isBGMPlayed ? 'music-on' : 'music-off'}`;
 
     if (!isMobile) {
       return (
@@ -82,7 +110,11 @@ class App extends React.Component<{}, IAppState> {
             <img src={LoadingGif} alt="loading gif"/>
           </div>
           <div className={dialogCls}>
-            <DialogMain setContentLoaded={this.setLoaded} isLoaded={isLoaded}/>
+            <DialogMain setContentLoaded={this.setLoaded} isLoaded={isLoaded} setBGMState={this.setBgState}/>
+          </div>
+          <div id="bgm-switcher" className={bgmSwitcherCls} onClick={this.toggleBGM}>
+            {isBGMPlayed && <MusicOn />}
+            {!isBGMPlayed && <MusicOff />}
           </div>
           <audio src={MusicBg} id="music_bg" preload="auto" loop={true}></audio>
           <audio src={Music1} id="music1" preload="auto"></audio>

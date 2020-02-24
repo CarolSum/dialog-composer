@@ -28,7 +28,7 @@ import ReviewImg from '../../assets/review.png';
 // scene 9
 import QrCodeImg from '../../assets/qrcode.png';
 
-import { cubicBezier, animateCSS, measureLeft, setElementStyle, AudioController, measureHeight, isIOS } from '../../utils';
+import { cubicBezier, animateCSS, measureLeft, setElementStyle, AudioController, measureHeight, isIOS, isWeixin, measureWidth } from '../../utils';
 import { Slider } from '../slider/slide';
 
 import './dialog.css';
@@ -146,6 +146,7 @@ interface IDialogState {
 interface IDialogProps {
   setContentLoaded: () => void;
   isLoaded: boolean;
+  setBGMState: (state: boolean) => void;
 }
 
 export default class DialogMain extends Component<IDialogProps, IDialogState> {
@@ -264,9 +265,11 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
 
     // 计算背景图的缩放对一些元素百分比定位的影响
     const sc1Subway = measureLeft(0.212, 0.25);
+    const subwayWidth = measureWidth(0.35);
     setElementStyle('.subway-container', {
       left: `${sc1Subway.left * 100}%`,
       top: `${sc1Subway.top * 100}%`,
+      width: `${subwayWidth * 100}%`,
     });
     const elSubway2 = measureLeft(0, 0.13);
     setElementStyle('.el-subway2', {
@@ -493,10 +496,11 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     });
 
     // 截图生成图片的容器
-    setElementStyle('.pic-container', {
-      transform: `scale(${1 / window.devicePixelRatio})`,
-    });
-
+    if (!isWeixin()) {
+      setElementStyle('.pic-container', {
+        transform: `scale(${1 / window.devicePixelRatio})`,
+      });
+    }
   }
 
   handleClickTag = (e: string) => {
@@ -566,6 +570,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       this.setState({
         isInitial: false,
       });
+      this.props.setBGMState(true);
     }
   }
 
@@ -597,18 +602,19 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       //   document.body.appendChild(canvas);
       //   canvas.style.cssText = "width: 1680px; height: 939px; position: fixed; top: 0px; left: 0px; opacity: 1; transform: scale(0.8); z-index: 99999999; ";
       // });
+      const scale = window.devicePixelRatio;
+      const option = isWeixin() ? {} : {
+        height: node.offsetHeight * scale,
+        width: node.offsetWidth * scale,
+        style: {
+          transform: "scale(" + scale + ")",
+          transformOrigin: "top left",
+          width: node.offsetWidth + "px",
+          height: node.offsetHeight + "px",
+        } 
+      };
       if (isIOS()) {
-        const scale = window.devicePixelRatio;
-        (domtoimage as any).toSvg(node, {
-          height: node.offsetHeight * scale,
-          width: node.offsetWidth * scale,
-          style: {
-            transform: "scale(" + scale + ")",
-            transformOrigin: "top left",
-            width: node.offsetWidth + "px",
-            height: node.offsetHeight + "px",
-          }
-        }).then((data: any) => { this.convertToImg(data); })
+        (domtoimage as any).toSvg(node, option).then((data: any) => { this.convertToImg(data); })
           .catch((error: any) => {
             console.error('oops, tosvg something went wrong!', error);
             setTimeout(() => {
@@ -619,17 +625,8 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
             }, 0);
           });
       } else {
-        const scale = window.devicePixelRatio;
-        (domtoimage as any).toPng(node, {
-          height: node.offsetHeight * scale,
-          width: node.offsetWidth * scale,
-          style: {
-            transform: "scale(" + scale + ")",
-            transformOrigin: "top left",
-            width: node.offsetWidth + "px",
-            height: node.offsetHeight + "px",
-          }
-        }).then((data: any) => { this.convertToImg(data); })
+        console.log(option);
+        (domtoimage as any).toPng(node, option).then((data: any) => { this.convertToImg(data); })
           .catch((error: any) => {
             console.error('oops, topng something went wrong!', error);
             setTimeout(() => {

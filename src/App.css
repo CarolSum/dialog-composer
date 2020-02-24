@@ -66,3 +66,30 @@
 .hidden {
   visibility: hidden;
 }
+
+#bgm-switcher {
+  position: fixed;
+  right: 24px;
+  top: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #666;
+  opacity: 0.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#bgm-switcher svg {
+  width: 24px;
+  height: 24px;
+}
+
+.music-on {
+
+}
+
+.music-off {
+
+}
