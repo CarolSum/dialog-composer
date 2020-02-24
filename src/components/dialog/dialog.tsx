@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import domtoimage from 'dom-to-image';
+import ReactLoading from "react-loading";
+
 import { IAniFrame, animationGroup } from '../../config';
 import CoffeeText from '../../assets/coffee.png';
 import ScanQRcode from '../../assets/scan.png';
@@ -138,6 +140,7 @@ interface IDialogState {
   isInitial: boolean;
   Scene8Actived: boolean;
   sharePic: boolean;
+  loadingQrCode: boolean;
 }
 
 interface IDialogProps {
@@ -176,11 +179,12 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       isInitial: true,
       Scene8Actived: false,
       sharePic: false,
+      loadingQrCode: false,
     };
   }
 
   setOriginPoint = (e: TouchEvent) => {
-    if (this.state.isInitial) return;
+    if (this.state.isInitial || this.state.loadingQrCode) return;
     if (e.touches.length) {
       const touchPoint = e.touches[0];
       this.originX = touchPoint.screenX;
@@ -314,7 +318,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     e.preventDefault();
 
     if (!this.props.isLoaded) return;
-    if (this.state.isInitial) return;
+    if (this.state.isInitial || this.state.loadingQrCode) return;
 
     if (!e.touches.length) return;
     const point = e.touches[0];
@@ -472,14 +476,16 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       top: `${maxH * 100 + sc8LyricsContainer.top * 100 - 2}%`,
     });
 
-    const saveImg = document.querySelector('#saveImg') as HTMLImageElement;
-    saveImg.addEventListener('touchstart', e => {
+    const scene8 = document.querySelector('.section.scene8') as HTMLImageElement;
+    scene8.addEventListener('touchstart', e => {
+      console.log('touch scene8');
       e.preventDefault();
+      if (this.state.loadingQrCode) return;
       this.saveBtnTimer = setTimeout(() => {
         this.savePicture();
-      }, 800); 
-    });
-    saveImg.addEventListener('touchend', e => {
+      }, 1300); 
+    },);
+    scene8.addEventListener('touchend', e => {
       e.preventDefault();
       if (this.saveBtnTimer) {
         clearTimeout(this.saveBtnTimer);
@@ -490,6 +496,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     setElementStyle('.pic-container', {
       transform: `scale(${1 / window.devicePixelRatio})`,
     });
+
   }
 
   handleClickTag = (e: string) => {
@@ -604,6 +611,12 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
         }).then((data: any) => { this.convertToImg(data); })
           .catch((error: any) => {
             console.error('oops, tosvg something went wrong!', error);
+            setTimeout(() => {
+              this.setState({
+                sharePic: false,
+                loadingQrCode: false,
+              });
+            }, 0);
           });
       } else {
         const scale = window.devicePixelRatio;
@@ -619,6 +632,12 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
         }).then((data: any) => { this.convertToImg(data); })
           .catch((error: any) => {
             console.error('oops, topng something went wrong!', error);
+            setTimeout(() => {
+              this.setState({
+                sharePic: false,
+                loadingQrCode: false,
+              });
+            }, 0);
           });
       }
       // (domtoimage as any).toSvg(node)
@@ -626,36 +645,36 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       //   .catch((error: any) => {
       //     console.error('oops, something went wrong!', error);
       //   });
-    })
+    });
+
+    setTimeout(() => {
+      this.setState({
+        loadingQrCode: true,
+      });
+    }, 50);
   }
 
   convertToImg = (dataUrl: any) => {
     var img = new Image();
     img.src = dataUrl;
     const n = document.querySelector('.pic-container') as HTMLDivElement;
+    this.setState({
+      loadingQrCode: false,
+    });
     n.appendChild(img);
-    // img.addEventListener('click', stopWheel, true);
-    // img.addEventListener('touchstart', stopWheel);
-    // img.addEventListener('touchend', stopWheel); 
-    // img.addEventListener('touchmove', stopWheel); 
-    img.onclick = () => {
+
+    img.addEventListener('touchstart', e => {
+      console.log('touch img');
+      e.stopPropagation();
+    },);
+
+    img.addEventListener('touchend', e => {
+      e.stopPropagation();
       n.removeChild(img);
       this.setState({
         sharePic: false,
       })
-    }
-  }
-
-  saveBtnPressed = () => {
-    this.saveBtnTimer = setTimeout(() => {
-      this.savePicture();
-    }, 800);
-  }
-
-  saveBtnReleased = () => {
-    if (this.saveBtnTimer) {
-      clearTimeout(this.saveBtnTimer);
-    }
+    },);
   }
 
   render() {
@@ -836,13 +855,19 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
               <img src={QrCodeImg} alt="二维码url"/>
             </div>
             <div className={`d-func-btns ${btnsCls}`}>
-              <img src={RewriteImg} alt="rewrite" onClick={this.rewrite}/>
-              <img src={ReviewImg} alt="review" style={{ marginLeft: '12px' }} onClick={this.review}/>
+              <img src={RewriteImg} alt="rewrite" onTouchEnd={this.rewrite}/>
+              <img src={ReviewImg} alt="review" style={{ marginLeft: '12px' }} onTouchEnd={this.review}/>
             </div>
             <div className={`d-save-btn ${btnsCls}`}>
               <img src={SaveBtn} alt="save" id="saveImg" />
             </div>
             <div className="pic-container"></div>
+            {this.state.loadingQrCode && (
+              <ReactLoading
+                type={"spokes"}
+                color="#bbb"
+              ></ReactLoading>
+            )}
           </div>
         )}
       </div>

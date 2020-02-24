@@ -57,6 +57,7 @@
     "react-dev-utils": "^10.1.0",
     "react-dom": "^16.12.0",
     "react-hot-loader": "^4.12.19",
+    "react-loading": "^2.0.3",
     "resolve": "1.15.0",
     "resolve-url-loader": "3.1.1",
     "sass-loader": "8.0.2",
