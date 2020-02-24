@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, ChangeEvent } from 'react';
 import domtoimage from 'dom-to-image';
 import ReactLoading from "react-loading";
 
-import { IAniFrame, animationGroup } from '../../config';
+import { IAniFrame, animationGroup, IResponse } from '../../config';
 import CoffeeText from '../../assets/coffee.png';
 import ScanQRcode from '../../assets/scan.png';
 import Subway from '../../assets/subway.png';
@@ -141,6 +141,7 @@ interface IDialogState {
   Scene8Actived: boolean;
   sharePic: boolean;
   loadingQrCode: boolean;
+  response: IResponse;
 }
 
 interface IDialogProps {
@@ -160,6 +161,8 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
 
   // 歌曲名输入框的标志位, 用于处理中文输入法在部分设备的拼音字符问题
   private inputLock: boolean = false;
+  // 用户输入的歌曲名
+  private titleValue: string = '';
   // 保存用户选择的标签
   private selectTags: { [key: string]: boolean } = {};
   private selectType: string = '';
@@ -181,6 +184,20 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       Scene8Actived: false,
       sharePic: false,
       loadingQrCode: false,
+      response: {
+        title: '用户定制的歌曲名',
+        lyrics: [
+          '这是歌词······',
+          '这是歌词······',
+          '这是歌词······',
+          '这是歌词······',
+          '这是歌词······',
+          '这是歌词······',
+          '这是歌词······',
+          '这是歌词······',
+          '这是歌词······',
+        ]
+      }
     };
   }
 
@@ -431,17 +448,45 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
   }
 
   touchConfirm = (flag: boolean) => {
-    const { Scene8Actived } = this.state;
     const node = document.querySelector('.el-confirm');
     if (flag) {
       node?.classList.add('touch');
     } else {
       node?.classList.remove('touch');
+      this.tryToRequest();
+    }
+  }
+
+  tryToRequest = async () => {
+    const { Scene8Actived } = this.state;
+    // 校验用户输入和选择的标签
+    if (!(this.titleValue && this.titleValue.length <= 10)) {
+      alert('歌曲名不能为空或者超过10个字');
+      return;
+    }
+    if (!this.selectType) {
+      alert('请选择一个标签');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('title', this.titleValue);
+    formData.append('tag', this.selectType);
+    // 发起请求
+    fetch('http://106.14.182.45:5500/lyrics', {
+      method: 'POST',
+      body: formData,
+    })
+    .then(res => res.json())
+    .then(result => {
+      console.log(result);
+      // this.setState({
+      //   response: result,
+      // });
       if (!Scene8Actived) {
         this.setState({
           Scene8Actived: true,
         });
-
+  
         setTimeout(() => {
           this.setupScene8();
           this.switchScene(true);
@@ -449,7 +494,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       } else {
         this.switchScene(true);
       }
-    }
+    })
   }
 
   setupScene8 = () => {
@@ -540,6 +585,10 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
         this.selectType = type;
       }
     }
+  }
+
+  setTitleValue = (e: ChangeEvent) => {
+    this.titleValue = (e.target as HTMLInputElement).value;
   }
 
   compositeEnd = () => {
@@ -691,7 +740,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
   }
 
   render() {
-    const { sectionId, isInitial, Scene8Actived, sharePic } = this.state;
+    const { sectionId, isInitial, Scene8Actived, sharePic, response } = this.state;
 
     const cls = isInitial ? 'opacity0' : 'opacity1';
 
@@ -793,6 +842,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
                     onCompositionEnd={this.compositeEnd}
                     onCompositionStart={this.compositeStart}
                     onInput={this.checkInputValid}
+                    onChange={this.setTitleValue}
                     // onFocus={}
                   />
                 </div>
@@ -855,17 +905,13 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
         {Scene8Actived && (
           <div className="section scene8">
             <div className="lyrics-wrapper opacity0"></div>
-            <div className="d-title opacity0">用户定制的歌曲名</div>
+            <div className="d-title opacity0">{response.title}</div>
             <div className="iyrics-container opacity0">
-              <div className="iyrics-line">这是歌词 ······</div>
-              <div className="iyrics-line">这是歌词 ······</div>
-              <div className="iyrics-line">这是歌词 ······</div>
-              <div className="iyrics-line">这是歌词 ······</div>
-              <div className="iyrics-line">这是歌词 ······</div>
-              <div className="iyrics-line">这是歌词 ······</div>
-              <div className="iyrics-line">这是歌词 ······</div>
-              <div className="iyrics-line">这是歌词 ······</div>
-              <div className="iyrics-line">这是歌词 ······</div>
+              {response.lyrics.map((lyric, idx) => {
+                return (
+                  <div className="iyrics-line" key={idx}>{lyric}</div>
+                );
+              })}
             </div>
             <div className={`qr-code ${qrCodeCls}`}>
               <img src={QrCodeImg} alt="二维码url"/>

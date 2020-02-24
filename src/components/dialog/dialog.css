@@ -519,3 +519,10 @@ div.textarea:before {
 .none {
   display: none;
 }
+
+#saveImg {
+  -webkit-animation-name: flash;
+  animation-name: flash;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+}

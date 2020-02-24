@@ -11,6 +11,11 @@ export interface IAniFrame {
   callback?: () => void;
 }
 
+export interface IResponse {
+  title: string;
+  lyrics: string[];
+}
+
 // 定义每个场景中的动画组
 export const animationGroup: IAniFrame[][] = [
   [
