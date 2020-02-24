@@ -78,7 +78,7 @@ export const animationGroup: IAniFrame[][] = [
       aniCls: ['slideInLeft'],
       addAfterAnimation: ['opacity1'],
       removeBeforeAnimation: ['opacity0'],
-      callback: () => {
+      callbefore: () => {
         AudioController.play('#music3');
       },
     },

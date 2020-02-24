@@ -26,7 +26,7 @@ import ReviewImg from '../../assets/review.png';
 // scene 9
 import QrCodeImg from '../../assets/qrcode.png';
 
-import { cubicBezier, animateCSS, measureLeft, setElementStyle, AudioController, measureHeight, isIOS, isWeixin } from '../../utils';
+import { cubicBezier, animateCSS, measureLeft, setElementStyle, AudioController, measureHeight, isIOS, isWeixin, measureWidth } from '../../utils';
 import { Slider } from '../slider/slide';
 
 import './dialog.css';
@@ -261,9 +261,11 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
 
     // 计算背景图的缩放对一些元素百分比定位的影响
     const sc1Subway = measureLeft(0.212, 0.25);
+    const subwayWidth = measureWidth(0.35);
     setElementStyle('.subway-container', {
       left: `${sc1Subway.left * 100}%`,
       top: `${sc1Subway.top * 100}%`,
+      width: `${subwayWidth * 100}%`,
     });
     const elSubway2 = measureLeft(0, 0.13);
     setElementStyle('.el-subway2', {
