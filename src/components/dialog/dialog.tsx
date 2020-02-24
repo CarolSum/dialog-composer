@@ -241,7 +241,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
 
     // 动态设置 scene7 信纸容器的高度
     setTimeout(() => {
-      const nodes = document.getElementsByClassName('letter-wrapper');
+      const nodes = document.getElementsByClassName('scene7-container');
       if (nodes && nodes.length > 0) {
         let h = window.innerWidth * 1.71;
         if (h > window.innerHeight) {
@@ -769,64 +769,66 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
           </div> 
         </div>
         <div className="section scene7">
-          <div className="letter-wrapper opacity0">
-            <div className="tag-container">
-              <div className="input-container">
-                <input type="text" className="song-input" placeholder="自定义歌曲名"
-                  onCompositionEnd={this.compositeEnd}
-                  onCompositionStart={this.compositeStart}
-                  onInput={this.checkInputValid}
-                  // onFocus={}
-                />
+          <div className="scene7-container">
+            <div className="letter-wrapper opacity0">
+              <div className="tag-container">
+                <div className="input-container">
+                  <input type="text" className="song-input" placeholder="自定义歌曲名"
+                    onCompositionEnd={this.compositeEnd}
+                    onCompositionStart={this.compositeStart}
+                    onInput={this.checkInputValid}
+                    // onFocus={}
+                  />
+                </div>
+                {sectionId === 8 && (
+                  <Slider speed={40}>
+                    <div className="slide-content">
+                      <div className="tag-row">
+                        <div className="tag-item item-a" onClick={() => { this.handleClickTag('a'); }}>
+                          <span>爱拼才会赢</span>
+                        </div>
+                        <div className="tag-item item-b" onClick={() => { this.handleClickTag('b'); }}>
+                          <span>未来不是梦</span>
+                        </div>
+                        <div className="tag-item item-c" onClick={() => { this.handleClickTag('c'); }}>
+                          <span>我真的很不错</span>
+                        </div>
+                        <div className="tag-item item-d" onClick={() => { this.handleClickTag('d'); }}>
+                          <span>壮志在我胸</span>
+                        </div>
+                      </div>
+                      <div className="tag-row margin-row">
+                        <div className="tag-item item-e" onClick={() => { this.handleClickTag('e'); }}>
+                          <span>哈哈哈哈</span>
+                        </div>
+                        <div className="tag-item item-f" onClick={() => { this.handleClickTag('f'); }}>
+                          <span>好嗨哟</span>
+                        </div>
+                        <div className="tag-item item-g" onClick={() => { this.handleClickTag('g'); }}>
+                          <span>小幸运</span>
+                        </div>
+                        <div className="tag-item item-h" onClick={() => { this.handleClickTag('h'); }}>
+                          <span>C位出道</span>
+                        </div>
+                      </div>
+                      <div className="tag-row">
+                        <div className="tag-item item-i" onClick={() => { this.handleClickTag('i'); }}>
+                          <span>佛系少年</span>
+                        </div>
+                        <div className="tag-item item-j" onClick={() => { this.handleClickTag('j'); }}>
+                          <span>葛优瘫</span>
+                        </div>
+                        <div className="tag-item item-k" onClick={() => { this.handleClickTag('k'); }}>
+                          <span>断舍离</span>
+                        </div>
+                        <div className="tag-item item-l" onClick={() => { this.handleClickTag('l'); }}>
+                          <span>神马都是浮云</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Slider>
+                )}
               </div>
-              {sectionId === 8 && (
-                <Slider speed={40}>
-                  <div className="slide-content">
-                    <div className="tag-row">
-                      <div className="tag-item item-a" onClick={() => { this.handleClickTag('a'); }}>
-                        <span>爱拼才会赢</span>
-                      </div>
-                      <div className="tag-item item-b" onClick={() => { this.handleClickTag('b'); }}>
-                        <span>未来不是梦</span>
-                      </div>
-                      <div className="tag-item item-c" onClick={() => { this.handleClickTag('c'); }}>
-                        <span>我真的很不错</span>
-                      </div>
-                      <div className="tag-item item-d" onClick={() => { this.handleClickTag('d'); }}>
-                        <span>壮志在我胸</span>
-                      </div>
-                    </div>
-                    <div className="tag-row margin-row">
-                      <div className="tag-item item-e" onClick={() => { this.handleClickTag('e'); }}>
-                        <span>哈哈哈哈</span>
-                      </div>
-                      <div className="tag-item item-f" onClick={() => { this.handleClickTag('f'); }}>
-                        <span>好嗨哟</span>
-                      </div>
-                      <div className="tag-item item-g" onClick={() => { this.handleClickTag('g'); }}>
-                        <span>小幸运</span>
-                      </div>
-                      <div className="tag-item item-h" onClick={() => { this.handleClickTag('h'); }}>
-                        <span>C位出道</span>
-                      </div>
-                    </div>
-                    <div className="tag-row">
-                      <div className="tag-item item-i" onClick={() => { this.handleClickTag('i'); }}>
-                        <span>佛系少年</span>
-                      </div>
-                      <div className="tag-item item-j" onClick={() => { this.handleClickTag('j'); }}>
-                        <span>葛优瘫</span>
-                      </div>
-                      <div className="tag-item item-k" onClick={() => { this.handleClickTag('k'); }}>
-                        <span>断舍离</span>
-                      </div>
-                      <div className="tag-item item-l" onClick={() => { this.handleClickTag('l'); }}>
-                        <span>神马都是浮云</span>
-                      </div>
-                    </div>
-                  </div>
-                </Slider>
-              )}
             </div>
           </div>
           <div className="el-confirm opacity0"
