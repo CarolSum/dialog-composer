@@ -27,11 +27,3 @@ footer {
   height: constant(safe-area-inset-bottom);
   height: env(safe-area-inset-bottom);
 }
-
-/* #__vconsole .vc-switch {
-  top: 0px !important;
-}
-
-#__vconsole.vc-toggle .vc-switch {
-  display: block !important;
-} */

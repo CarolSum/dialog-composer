@@ -210,5 +210,40 @@ export const animationGroup: IAniFrame[][] = [
         }
       ]
     },
+  ],
+  // scene 8
+  [
+    {
+      selector: '.lyrics-wrapper',
+      aniCls: ['lyrics-showup'],
+      removeBeforeAnimation: ['opacity0'],
+      addAfterAnimation: ['opacity08'],
+      children: [
+        {
+          selector: '.d-title',
+          aniCls: ['fadeIn'],
+          removeBeforeAnimation: ['opacity0'],
+          addAfterAnimation: ['opacity1'],
+        },
+        {
+          selector: '.iyrics-container',
+          aniCls: ['fadeIn'],
+          removeBeforeAnimation: ['opacity0'],
+          addAfterAnimation: ['opacity1'],
+        },
+        {
+          selector: '.d-func-btns',
+          aniCls: ['fadeIn'],
+          removeBeforeAnimation: ['opacity0'],
+          addAfterAnimation: ['opacity1'],
+        },
+        {
+          selector: '.d-save-btn',
+          aniCls: ['fadeIn'],
+          removeBeforeAnimation: ['opacity0'],
+          addAfterAnimation: ['opacity1'],
+        },
+      ]
+    }
   ]
 ]

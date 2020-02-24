@@ -22,6 +22,10 @@
   opacity: 1;
 }
 
+.opacity08 {
+  opacity: 0.8;
+}
+
 .visible {
   visibility: visible;
 }
@@ -350,6 +354,29 @@ div.textarea:before {
   align-items: center;
   font-family: 'shitisemi';
 }
+
+.lyrics-wrapper {
+  position: absolute;
+  background: center / cover no-repeat url('../../assets/bg-lyrics.jpeg');
+  height: 74.67%;
+  width: 91.4%;
+}
+
+@keyframes lyrics-showup {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.8;
+  }
+}
+
+.lyrics-showup {
+  -webkit-animation-name: lyrics-showup;
+  animation-name: lyrics-showup;
+  animation-duration: 1.5s;
+}
+
 
 .d-title {
   position: absolute;

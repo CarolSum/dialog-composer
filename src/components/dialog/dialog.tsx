@@ -474,6 +474,14 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       top: `${sc8Btns.top * 100}%`,
     });
 
+    // 歌词纸背景宽高
+    const lyricWrapperWidth = measureWidth(0.914);
+    const lyricWrapperHeight = measureHeight(0.7467);
+    setElementStyle('.lyrics-wrapper', {
+      width: `${lyricWrapperWidth * 100}%`,
+      height: `${lyricWrapperHeight * 100}%`,
+    });
+
     // 二维码top
     setElementStyle('.qr-code', {
       top: `${maxH * 100 + sc8LyricsContainer.top * 100 - 2}%`,
@@ -622,6 +630,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
                 sharePic: false,
                 loadingQrCode: false,
               });
+              this.resetFuncBtns();
             }, 0);
           });
       } else {
@@ -634,14 +643,10 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
                 sharePic: false,
                 loadingQrCode: false,
               });
+              this.resetFuncBtns();
             }, 0);
           });
       }
-      // (domtoimage as any).toSvg(node)
-      //   .then()
-      //   .catch((error: any) => {
-      //     console.error('oops, something went wrong!', error);
-      //   });
     });
 
     setTimeout(() => {
@@ -670,8 +675,19 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       n.removeChild(img);
       this.setState({
         sharePic: false,
-      })
+      });
+      this.resetFuncBtns();
     },);
+  }
+
+  resetFuncBtns = () => {
+    // 使用setTimeout确保样式先被react更新再做替换
+    setTimeout(() => {
+      const node1 = document.querySelector('.d-func-btns') as HTMLDivElement;
+      node1.classList.replace('opacity0', 'opacity1');
+      const node2 = document.querySelector('.d-save-btn') as HTMLDivElement;
+      node2.classList.replace('opacity0', 'opacity1');
+    }, 20);
   }
 
   render() {
@@ -838,8 +854,9 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
         </div>
         {Scene8Actived && (
           <div className="section scene8">
-            <div className="d-title">用户定制的歌曲名</div>
-            <div className="iyrics-container">
+            <div className="lyrics-wrapper opacity0"></div>
+            <div className="d-title opacity0">用户定制的歌曲名</div>
+            <div className="iyrics-container opacity0">
               <div className="iyrics-line">这是歌词 ······</div>
               <div className="iyrics-line">这是歌词 ······</div>
               <div className="iyrics-line">这是歌词 ······</div>
@@ -853,11 +870,11 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
             <div className={`qr-code ${qrCodeCls}`}>
               <img src={QrCodeImg} alt="二维码url"/>
             </div>
-            <div className={`d-func-btns ${btnsCls}`}>
+            <div className={`d-func-btns opacity0 ${btnsCls}`}>
               <img src={RewriteImg} alt="rewrite" onTouchEnd={this.rewrite}/>
               <img src={ReviewImg} alt="review" style={{ marginLeft: '12px' }} onTouchEnd={this.review}/>
             </div>
-            <div className={`d-save-btn ${btnsCls}`}>
+            <div className={`d-save-btn opacity0 ${btnsCls}`}>
               <img src={SaveBtn} alt="save" id="saveImg" />
             </div>
             <div className="pic-container"></div>

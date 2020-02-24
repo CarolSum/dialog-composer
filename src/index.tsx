@@ -3,13 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import VConsole from 'vconsole';
 import { setDocHeight } from './utils';
 
 setDocHeight();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const vConsole = new VConsole();
 ReactDOM.render(<App />, document.getElementById('root'));
 
 if ((module as any).hot) {
