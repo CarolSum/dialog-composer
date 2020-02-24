@@ -143,6 +143,7 @@ interface IDialogState {
 interface IDialogProps {
   setContentLoaded: () => void;
   isLoaded: boolean;
+  setBGMState: (state: boolean) => void;
 }
 
 export default class DialogMain extends Component<IDialogProps, IDialogState> {
@@ -561,6 +562,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       this.setState({
         isInitial: false,
       });
+      this.props.setBGMState(true);
     }
   }
 

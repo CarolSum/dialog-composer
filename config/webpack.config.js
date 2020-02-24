@@ -425,6 +425,14 @@ module.exports = function(webpackEnv) {
                 inputSourceMap: shouldUseSourceMap,
               },
             },
+            // svg loader
+            {
+              test: /\.svg$/,
+              exclude: /node_modules/,
+              use: {
+                  loader: 'svg-react-loader',
+              },
+            },
             // "postcss" loader applies autoprefixer to our CSS.
             // "css" loader resolves paths in CSS and adds assets as dependencies.
             // "style" loader turns CSS into JS modules that inject <style> tags.
