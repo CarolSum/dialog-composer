@@ -26,7 +26,7 @@ import ReviewImg from '../../assets/review.png';
 // scene 9
 import QrCodeImg from '../../assets/qrcode.png';
 
-import { cubicBezier, animateCSS, measureLeft, setElementStyle, AudioController, measureHeight, isIOS } from '../../utils';
+import { cubicBezier, animateCSS, measureLeft, setElementStyle, AudioController, measureHeight, isIOS, isWeixin } from '../../utils';
 import { Slider } from '../slider/slide';
 
 import './dialog.css';
@@ -487,9 +487,11 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     });
 
     // 截图生成图片的容器
-    setElementStyle('.pic-container', {
-      transform: `scale(${1 / window.devicePixelRatio})`,
-    });
+    if (!isWeixin()) {
+      setElementStyle('.pic-container', {
+        transform: `scale(${1 / window.devicePixelRatio})`,
+      });
+    }
   }
 
   handleClickTag = (e: string) => {
@@ -590,35 +592,27 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       //   document.body.appendChild(canvas);
       //   canvas.style.cssText = "width: 1680px; height: 939px; position: fixed; top: 0px; left: 0px; opacity: 1; transform: scale(0.8); z-index: 99999999; ";
       // });
+      const scale = window.devicePixelRatio;
+      const option = isWeixin() ? {} : {
+        height: node.offsetHeight * scale,
+        width: node.offsetWidth * scale,
+        style: {
+          transform: "scale(" + scale + ")",
+          transformOrigin: "top left",
+          width: node.offsetWidth + "px",
+          height: node.offsetHeight + "px",
+        } 
+      };
       if (isIOS()) {
-        const scale = window.devicePixelRatio;
-        (domtoimage as any).toSvg(node, {
-          height: node.offsetHeight * scale,
-          width: node.offsetWidth * scale,
-          style: {
-            transform: "scale(" + scale + ")",
-            transformOrigin: "top left",
-            width: node.offsetWidth + "px",
-            height: node.offsetHeight + "px",
-          }
-        }).then((data: any) => { this.convertToImg(data); })
+        (domtoimage as any).toSvg(node, option).then((data: any) => { this.convertToImg(data); })
           .catch((error: any) => {
             console.error('oops, tosvg something went wrong!', error);
           });
       } else {
-        const scale = window.devicePixelRatio;
-        (domtoimage as any).toPng(node, {
-          height: node.offsetHeight * scale,
-          width: node.offsetWidth * scale,
-          style: {
-            transform: "scale(" + scale + ")",
-            transformOrigin: "top left",
-            width: node.offsetWidth + "px",
-            height: node.offsetHeight + "px",
-          }
-        }).then((data: any) => { this.convertToImg(data); })
+        console.log(option);
+        (domtoimage as any).toPng(node, option).then((data: any) => { this.convertToImg(data); })
           .catch((error: any) => {
-            console.error('oops, topng something went wrong!', error);
+            console.error('oops, android to png something went wrong!', error);
           });
       }
       // (domtoimage as any).toSvg(node)

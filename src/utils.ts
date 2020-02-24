@@ -16,6 +16,11 @@ export function isIOS() {
   return isiOS;
 }
 
+export function isWeixin() {
+  const ua = window.navigator.userAgent.toLowerCase();
+  return !!ua.match(/micromessenger/i);
+}
+
 export function animateCSS(element: string, animationName: string[], callback?: any) {
   const node = document.querySelector(element);
   if (!node) return Promise.resolve(true);
