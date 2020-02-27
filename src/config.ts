@@ -252,3 +252,18 @@ export const animationGroup: IAniFrame[][] = [
     }
   ]
 ]
+
+export const TagMap = {
+  a: '爱拼才会赢',
+  b: '未来不是梦',
+  c: '我真的很不错',
+  d: '壮志在我胸',
+  e: '哈哈哈哈',
+  f: '好嗨哟',
+  g: '小幸运',
+  h: 'C位出道',
+  i: '佛系少年',
+  j: '葛优瘫',
+  k: '断舍离',
+  l: '神马都是浮云',
+} as { [k: string]: string };

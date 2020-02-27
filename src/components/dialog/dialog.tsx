@@ -2,7 +2,7 @@ import React, { Component, ChangeEvent } from 'react';
 import domtoimage from 'dom-to-image';
 import ReactLoading from "react-loading";
 
-import { IAniFrame, animationGroup, IResponse } from '../../config';
+import { IAniFrame, animationGroup, IResponse, TagMap } from '../../config';
 import CoffeeText from '../../assets/coffee.png';
 import ScanQRcode from '../../assets/scan.png';
 import Subway from '../../assets/subway.png';
@@ -141,6 +141,7 @@ interface IDialogState {
   Scene8Actived: boolean;
   sharePic: boolean;
   loadingQrCode: boolean;
+  fetchingResult: boolean;
   response: IResponse;
 }
 
@@ -184,6 +185,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       Scene8Actived: false,
       sharePic: false,
       loadingQrCode: false,
+      fetchingResult: false,
       response: {
         title: '用户定制的歌曲名',
         lyrics: [
@@ -202,7 +204,8 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
   }
 
   setOriginPoint = (e: TouchEvent) => {
-    if (this.state.isInitial || this.state.loadingQrCode) return;
+    const { isInitial, loadingQrCode, fetchingResult} = this.state;
+    if (isInitial || loadingQrCode || fetchingResult) return;
     if (e.touches.length) {
       const touchPoint = e.touches[0];
       this.originX = touchPoint.screenX;
@@ -338,7 +341,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     e.preventDefault();
 
     if (!this.props.isLoaded) return;
-    if (this.state.isInitial || this.state.loadingQrCode) return;
+    if (this.state.isInitial || this.state.loadingQrCode || this.state.fetchingResult) return;
 
     if (!e.touches.length) return;
     const point = e.touches[0];
@@ -468,20 +471,29 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
       alert('请选择一个标签');
       return;
     }
+
+    if (this.state.fetchingResult) return;
+   
     const formData = new FormData();
     formData.append('title', this.titleValue);
-    formData.append('tag', this.selectType);
-    // 发起请求
-    fetch('http://106.14.182.45:5500/lyrics', {
+    formData.append('tag', TagMap[`${this.selectType}`]);
+
+    this.setState({
+      fetchingResult: true,
+    });
+
+    // // 发起请求
+    fetch('http://119.3.14.190:7777/lyrics', {
       method: 'POST',
       body: formData,
     })
     .then(res => res.json())
     .then(result => {
       console.log(result);
-      // this.setState({
-      //   response: result,
-      // });
+      this.setState({
+        response: result,
+        fetchingResult: false,
+      });
       if (!Scene8Actived) {
         this.setState({
           Scene8Actived: true,
@@ -536,7 +548,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
     scene8.addEventListener('touchstart', e => {
       console.log('touch scene8');
       e.preventDefault();
-      if (this.state.loadingQrCode) return;
+      if (this.state.loadingQrCode || this.state.fetchingResult) return;
       this.saveBtnTimer = setTimeout(() => {
         this.savePicture();
       }, 1300); 
@@ -740,7 +752,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
   }
 
   render() {
-    const { sectionId, isInitial, Scene8Actived, sharePic, response } = this.state;
+    const { sectionId, isInitial, Scene8Actived, sharePic, response, loadingQrCode, fetchingResult } = this.state;
 
     const cls = isInitial ? 'opacity0' : 'opacity1';
 
@@ -901,6 +913,14 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
             onTouchStart={() => { this.touchConfirm(true); }}
             onTouchEnd={() => { this.touchConfirm(false); }}>
           </div>
+          {fetchingResult && (
+            <div className="loading-container">
+              <ReactLoading
+                type={"spokes"}
+                color="#bbb"
+              ></ReactLoading>
+            </div>
+          )}
         </div>
         {Scene8Actived && (
           <div className="section scene8">
@@ -924,7 +944,7 @@ export default class DialogMain extends Component<IDialogProps, IDialogState> {
               <img src={SaveBtn} alt="save" id="saveImg" />
             </div>
             <div className="pic-container"></div>
-            {this.state.loadingQrCode && (
+            {loadingQrCode && (
               <ReactLoading
                 type={"spokes"}
                 color="#bbb"
